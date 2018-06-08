@@ -1,0 +1,148 @@
+fold all : ctrl+shift+p -> fold all
+
+vue js
+architectures headless cms
+
+
+serveur webpack pour vue js :
+cd flask_projets\Front\Projet
+npm run dev
+
+
+commandes :
+
+LANCEMENT SERVEUR FLASK:
+cd flask_projets/API/venv/Scripts
+activate
+cd../app
+set FLASK_APP=app.py
+set FLASK_DEBUG=1
+flask run
+
+
+SERVEUR BDD ORIENT:
+cd C:\Users\zzr\orientdb-community-importers-2.2.34\bin
+server.bat
+
+
+Lancement Shell terminal atom :
+cd .\venv\Scripts\
+.\activate.bat
+cd..
+cd .\app\
+
+
+SERVEUR BDD ORIENT ENTREPRISE:
+cd C:\Users\zzr\orientdb-enterprise-2.2.31 tar\bin
+server.bat
+
+SERVEUR BDD RETHINK
+cd rethinkdb-2.3.6
+rethinkdb.exe
+
+CONSOLE ORIENT SUR SHELL :
+cd '.\Users\zzr\orientdb-enterprise-2.2.31 tar\bin\'
+.\console.bat
+
+CONSOLE ORIENT:
+cd C:\Users\zzr\orientdb-enterprise-2.2.31 tar\bin
+console.bat
+
+
+COMMANDES CONSOLE ORIENT:
+connection au serveur à patir de la console : CONNECT remote:localhost root root
+LIST DATABASES
+connection à une base : CONNECT remote:localhost/demodb admin admin
+CREATE CLASS Alien
+CREATE PROPERTY Alien.name STRING
+CREATE PROPERTY Alien.birthDate DATE
+INFO CLASS Alien
+ALTER PROPERTY Alien.name MIN 3         // AJOUTER CONTRAINTE A UNE PROPRIETE
+BROWSE CLASS OUser
+DISPLAY RECORD 0                        // AFFICHER UN RECORD AVEC SON IDENTIFIANT (LA CASE TOUT A GAUCHE DANS LE RESULTAT DU BROWSE)
+LIST CLUSTERS
+ALTER CLASS Customer ADDCLUSTER UK_Customers
+BROWSE CLUSTER OUser                    // Viewing Records in a Cluster
+LOAD RECORD #12:4                       // CHERCHER RECORD
+
+
+SELECT FROM OUser
+SELECT FROM CLUSTER:Ouser
+
+INSERT : 3 formes possibles :
+  - INSERT INTO    Employee(name, surname, gender)
+      VALUES('Jay', 'Miner', 'M')
+  - INSERT INTO Employee SET name='Jay', surname='Miner', gender='M'
+  - INSERT INTO Employee CONTENT {name : 'Jay', surname : 'Miner',
+        gender : 'M'}                                                           // ma préférée
+
+UPDATE : 2 formes possibles
+  - UPDATE Employee SET local=TRUE WHERE city='London'
+  - UPDATE Employee MERGE { local : TRUE } WHERE city='London'                  // ma préférée
+
+DELETE FROM Employee WHERE city <> 'London'
+
+
+EDGES ET VERTICLES:
+
+CREATE CLASS Person EXTENDS V
+
+CREATE CLASS Restaurant EXTENDS V
+
+CREATE VERTEX Person SET name='Luca'
+CREATE VERTEX Restaurant SET name='Dante', type='Pizza'
+
+CREATE CLASS Eat EXTENDS E
+
+CREATE EDGE Eat FROM ( SELECT FROM Person WHERE name='Luca' )
+          TO ( SELECT FROM Restaurant WHERE name='Dante' )
+
+CREATE EDGE Eat FROM #11:1 TO #12:0       // avec les RID
+
+CREATE CLASS Friend EXTENDS E
+CREATE EDGE Friend FROM #11:0 TO #11:2
+
+QUERIES :  (fonctions in(), out(), et both(), qui prennent ou pas des arguments)
+
+SELECT IN() FROM Restaurant WHERE name='Dante'     // tous les vertex entrant dans le record 'Dante'
+SELECT EXPAND( IN() ) FROM Restaurant WHERE name='Dante'  // détails des vertex rentrants, IN() : tous les edges ??
+SELECT EXPAND( BOTH( 'Friend' ) ) FROM Person WHERE name = 'Luca'  // BOTH : quand l'orientation de l'edge n'est pas importante, comme dans friends
+// là, le nom de l'edge (friend) est donné dans la requete : ( BOTH( 'Friend' ) )
+
+SELECT EXPAND( BOTH('Friend').out('Eat') ) FROM Person
+          WHERE name='Luca'                                 //You can also now view all the restaurants patronized by friends of Luca.
+
+
+
+
+
+
+sauvegarde fichier :
+
+dans l'HTML:
+<input type="file" name="mon_fichier" />
+avec dans form, enctype = multipart/form-data
+
+dans flask, reception de la requete du form:
+fichier = request.files['mon_fichier']
+nom_fichier = fichier.filename
+if nom_fichier[-5:] != '.html':                     ###La vérification de l'extension du fichier que j'ai faite ne suffit pas. Il vaut mieux établir une liste d'extensions autorisées, et interdire les autres.
+    nom_fichier = secure_filename(nom_fichier)
+    fichier.save('./uploads/' + nom_fichier)    ### enregistrer dans le dossier uploads
+
+
+
+URL_FOR / URL Dynamique :
+
+url_for()
+Décidément, cette fonction nous suit partout. ^^
+Commençons par un petit rappel de la génération de liens vers les routes personnalisées avec url_for(). Prenons comme exemple la vue suivante :
+
+@app.route('/discussion/page/<int:num_page>')
+def discussion(num_page):
+    return 'Affichage de la page n°{num} de la discussion.'.format(num=num_page)
+
+Pour générer un lien vers la 3ème page de la discussion ('/discussion/page/3'), on doit faire url_for('discussion', num_page=3). Ça, vous le saviez. Mais que se passe-t-il si on rajoute des paramètres à url_for ? Eh bien il va générer une query string avec les paramètres en trop.
+
+url_for('discussion', num_page=3, truc='machin') # génère '/discussion/page/3?truc=machin'
+url_for('discussion', num_page=12, truc='machin', age=20) # génère '/discussion/page/12?truc=machin&age=20'
