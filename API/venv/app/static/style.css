@@ -1,0 +1,20 @@
+
+.erreur_champ {
+  /* background-color: red; */
+}
+div#commentaire_email {
+    color: red;
+}
+
+.commentaire_erreur {
+  color: red;
+}
+
+ a.navbar-brand {
+    width: 15% !important;
+}
+
+a.navbar-brand img {
+    height: 50%;
+    width: 50%;
+}

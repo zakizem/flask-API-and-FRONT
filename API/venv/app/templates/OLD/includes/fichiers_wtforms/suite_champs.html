@@ -1,0 +1,7 @@
+{% from "includes/fichiers_wtforms/_creationChamp.html" import creer_champ %}
+
+{% for question in formulaire   %}
+
+{{ creer_champ(question, prerempli) }}
+
+{% endfor %}

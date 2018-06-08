@@ -1,0 +1,29 @@
+- nom_de_la_question: email
+  texte: 'Adresse mail : '
+  type: email
+  saisie_obligatoire: oui
+- nom_de_la_question: password
+  texte: 'Mot de passe : '
+  type: text
+  saisie_obligatoire: oui
+- nom_de_la_question: prenom
+  texte: 'prenom : '
+  type: text
+  saisie_obligatoire: oui
+- nom_de_la_question: nom
+  texte: 'Nom : '
+  type: text
+  saisie_obligatoire: oui
+- nom_de_la_question: destination
+  texte: 'Destination de vacances favorite : '
+  type: liste
+  choix:
+    - Budapest
+    - Amsterdam
+    - Turin
+    - Bamako
+  saisie_obligatoire: non
+- nom_de_la_question: age
+  texte: 'Age : '
+  type: text
+  saisie_obligatoire: non

@@ -1,0 +1,60 @@
+{% extends "squelette.html" %}
+{% block contenu %}
+      <div class="row">
+        <div class="col-6">
+
+              <h4>Identification</h4>
+
+              <form method="post" action="/identification" >
+
+                  <fieldset>
+
+                    <div class="control-group">
+                      <label class="control-label col-4"  for="email_accueil">
+                        Email :
+                      </label>
+
+                        <input type="email" id="email_accueil" name="email_accueil" placeholder="" class="input-xlarge col-4">
+                        <div id="commentaire_email" class="col-6 "></div>
+
+                    </div>
+
+                    <div class="control-group">
+                      <label class="control-label col-4"  for="password">
+                        Mot de passe :
+                      </label>
+
+                        <input type="text" id="password_accueil" name="password_accueil" placeholder="" class="input-xlarge col-4">
+                        <div id="commentaire_password_accueil" class="col-6 "></div>
+
+
+                    </div>
+
+                    <br>
+
+                    <div class="control-group">
+                      <!-- Button -->
+                      <div class="controls text-center">
+                        <button class="btn btn-primary col-3">Se connecter</button>
+                      </div>
+                    </div>
+
+                  </fieldset>
+
+              </form>
+
+        </div>
+        <div class="col-6">
+            <br>
+            <center>
+
+              <a href="/form" class="btn btn-primary">Nouveau compte</a>
+
+            </center>
+
+
+
+        </div>
+      </div>
+
+{% endblock %}

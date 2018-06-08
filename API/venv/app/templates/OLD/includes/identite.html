@@ -1,0 +1,6 @@
+{% if session['session_valide'] == True %}
+  <div style="position: absolute; right: 0;margin-right: 4%; ">
+    <h6 align="center">{{session['prenom']}} {{session['nom']}}</h6>
+    <a href="/deconnexion" class="btn btn-primary" >Se déconnecter</a>
+  </div>
+{%endif%}

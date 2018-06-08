@@ -1,0 +1,20 @@
+{% extends "squelette.html" %}
+{% block contenu %}
+
+
+{% from "includes/fichiers_wtforms/_formhelpers.html" import render_field %}
+<form method=post>
+  <dl>
+    {{ render_field(form.username) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.confirm) }}
+    {{ render_field(form.accept_tos) }}
+
+    {% include "includes/fichiers_wtforms/suite_champs.html" %}
+  </dl>
+  <p><input type=submit value=Register>
+</form>
+
+
+{% endblock %}

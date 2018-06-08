@@ -1,0 +1,31 @@
+{% extends "squelette.html" %}
+{% block contenu %}
+
+      <div class="">
+        <div class="">
+
+          <form method="post" action="/envoi{{update}}" enctype="multipart/form-data" class="form-horizontal">
+
+              <fieldset>
+                <div >
+                  <legend class="">Identité du Patient : </legend>
+                </div>
+
+                  {% include "includes/champs.html" %}
+
+                <div class="control-group">
+
+                  <!-- Button -->
+                  <div class="controls">
+                    <button class="btn btn-primary">Valider</button>
+                  </div>
+                </div>
+
+              </fieldset>
+
+          </form>
+
+        </div>
+      </div>
+
+{% endblock %}

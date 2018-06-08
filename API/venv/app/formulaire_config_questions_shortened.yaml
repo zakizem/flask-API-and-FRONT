@@ -1,0 +1,13 @@
+- nom_de_la_question: destination
+  texte: 'Destination de vacances favorite : '
+  type: liste
+  choix:
+    - Budapest
+    - Amsterdam
+    - Turin
+    - Bamako
+  saisie_obligatoire: non
+- nom_de_la_question: age
+  texte: 'Age : '
+  type: text
+  saisie_obligatoire: non

@@ -1,0 +1,36 @@
+{% extends "squelette.html" %}
+{% block contenu %}
+
+  <br>
+      {% set i = 0 %}
+      {% for item in resultat %}
+
+        {% set i = i+1 %}
+
+        <br>
+
+        <h3>Récap: </h3>
+
+          {% for question in questions   %}
+
+            {{ question.texte }}
+
+            {% if question['type'] == 'text' or question['type'] == 'email' or question['type'] == 'liste' %}
+
+              {{ item[question.nom_de_la_question] }}
+
+            {% else %}
+
+              Type de question non reconnu : {{ question['type'] }}
+
+            {% endif %}
+
+            <br>
+
+          {% endfor %}
+
+      {% endfor %}
+<br><br>
+      <a href="/" class="btn btn-primary">Page d'accueil</a>
+
+{% endblock %}

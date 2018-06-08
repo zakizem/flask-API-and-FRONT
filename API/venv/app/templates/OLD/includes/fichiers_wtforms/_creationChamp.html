@@ -1,0 +1,35 @@
+{% macro creer_champ(question, prerempli) %}
+<dt>
+    <label class="" align="left" for="{{ question['nom_de_la_question'] }}">{{ question['texte'] }}</label>
+</dt>
+<dd>
+    {% if question['type'] == 'text' or question['type'] == 'email' %}
+
+
+          <input type="{{question['type']}}" id="{{ question['nom_de_la_question'] }}" name="{{ question['nom_de_la_question'] }}" value="{{ prerempli[question['nom_de_la_question']] }}" placeholder="" class=" {% include "includes/testSaisieObligatoire.html" %}">
+          <div id="commentaire_{{ question['nom_de_la_question'] }}" ></div>
+
+
+    {% elif question['type'] == 'liste' %}
+
+          <select name="{{ question['nom_de_la_question'] }}" value="{{ prerempli[question['nom_de_la_question']] }}"  data-live-search="true">
+            {% for choix in question['choix']   %}
+
+
+                  <option data-tokens="{{choix}}" {% if choix ==  prerempli[question['nom_de_la_question']] : %}selected{% endif %} > {{choix}} </option>
+
+
+            {% endfor %}
+          </select>
+
+
+    {% else %}
+
+    <div>
+      Type de question non reconnu : {{question['type']}}
+      <!-- Faire un console log après -->
+    </div>
+
+    {% endif %}
+  </dd>
+{% endmacro %}

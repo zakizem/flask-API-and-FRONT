@@ -1,0 +1,85 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+  <head/>
+
+  <body>
+  <br>
+    <div class="container-fluid container">
+      <div class="">
+        <div class="">
+
+          <form method="post" action="/envoi" enctype="multipart/form-data" class="form-horizontal">
+
+              <fieldset>
+                <div id="legend">
+                  <legend class="">Identité du Patient : </legend>
+                </div>
+
+                {% for question in formulaire   %}
+
+                  {% if question['type'] == 'texte' %}
+
+                    <div class="control-group">
+                      <label class="control-label"  for="{{ question['nom_de_la_question de la question'] }}">{{ question['texte'] }}</label>
+                      <div class="controls">
+                        <input type="text" id="{{ question['nom_de_la_question'] }}" name="{{ question['nom_de_la_question'] }}" placeholder="" class="input-xlarge col-2">
+                        <p class="help-block">{{ question['commentaire'] }}</p>
+                      </div>
+                    </div>
+
+                  {% elif question['type'] == 'liste' %}
+                  <div class="control-group">
+                    <label class="control-label"  for="{{ question['nom_de_la_question'] }}">{{ question['texte'] }}</label>
+                      <div class="controls">
+                        <select name="{{ question['nom_de_la_question'] }}" class="selectpicker col-2" data-live-search="true">
+                          {% for choix in question['choix']   %}
+
+
+                                <option data-tokens="{{choix}}"> {{choix}} </option>
+
+
+                          {% endfor %}
+                        </select>
+                        <p class="help-block">{{ question['commentaire'] }}</p>
+                      </div>
+                    </div>
+
+
+                  {% else %}
+
+                    Type de question non reconnu
+
+                  {% endif %}
+
+                {% endfor %}
+
+                <div class="control-group">
+                  <!-- Button -->
+                  <div class="controls">
+                    <button class="btn btn-primary">Valider</button>
+                  </div>
+                </div>
+
+              </fieldset>
+
+          </form>
+
+        <!-- <a href="/graphOrient" class="btn btn-primary">orient DB connection</a> -->
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <body/>
+
+
+    <html/>

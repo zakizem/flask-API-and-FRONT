@@ -1,0 +1,23 @@
+{% extends "squelette.html" %}
+{% block contenu %}
+
+
+{% from "includes/_formhelpers.html" import render_field %}
+<form method=post>
+  <dl>
+    <p>zzzzz</p>
+    {{form.formulaire}}
+    {% for element in form.formulaire %}
+
+    {% set elem = element['nom_de_la_question'] %}
+    <p>{{ elem }}</p>
+
+    {# {{render_field(form.~elem)}} #}
+
+    {% endfor %}
+  </dl>
+  <p><input type=submit value=Register>
+</form>
+
+
+{% endblock %}

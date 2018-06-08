@@ -1,0 +1,46 @@
+{% extends "formulaire_parent.html" %}
+{% block champs %}
+
+    {% for question in formulaire   %}
+
+      <div class="control-group row" align="center">
+        <label class="control-label col-md-3 col-md-offset-1 " align="left" for="{{ question['nom_de_la_question'] }}">{{ question['texte'] }}</label>
+        <div class="controls col-md-7 row">
+
+        {% if question['type'] == 'text' or question['type'] == 'email' %}
+
+
+              <input type="{{question['type']}}" id="{{ question['nom_de_la_question'] }}" name="{{ question['nom_de_la_question'] }}" value="{{ prerempli[question['nom_de_la_question']] }}" placeholder="" class="input-xlarge col-4 {% include "includes/testSaisieObligatoire.html" %}">
+              <div id="commentaire_{{ question['nom_de_la_question'] }}" class="col-6 "></div>
+
+
+        {% elif question['type'] == 'liste' %}
+
+              <select name="{{ question['nom_de_la_question'] }}" value="{{ prerempli[question['nom_de_la_question']] }}" class="selectpicker col-4" data-live-search="true">
+                {% for choix in question['choix']   %}
+
+
+                      <option data-tokens="{{choix}}" {% if choix ==  prerempli[question['nom_de_la_question']] : %}selected{% endif %} class="col-6"> {{choix}} </option>
+
+
+                {% endfor %}
+              </select>
+
+
+
+        {% else %}
+
+        <div>
+          Type de question non reconnu : {{question['type']}}
+          <!-- Faire un console log après -->
+        </div>
+
+        {% endif %}
+
+          </div>
+        </div>
+        <br>
+
+    {% endfor %}
+
+{% endblock %}
