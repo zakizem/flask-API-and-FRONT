@@ -3,21 +3,23 @@ fold all : ctrl+shift+p -> fold all
 vue js
 architectures headless cms
 
+lancement git :
+cd C:\Users\zzr\flask_projets\git_repo
 
 serveur webpack pour vue js :
-cd flask_projets\Front\Projet
+cd flask_projets\git_repo\Front\Projet
 npm run dev
 
 
 commandes :
 
 LANCEMENT SERVEUR FLASK:
-cd flask_projets/API/venv/Scripts
+cd flask_projets/git_repo/API/venv/Scripts
 activate
 cd../app
 set FLASK_APP=app.py
 set FLASK_DEBUG=1
-flask run
+flask run --with-threads
 
 
 SERVEUR BDD ORIENT:

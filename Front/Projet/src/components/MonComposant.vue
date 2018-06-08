@@ -45,8 +45,9 @@ export default {
           // self.message = Object.assign('', self.message, response)
           // console.log('self.message 2 ');
           // console.log(self.message);
-
-
+          if (typeof response === "object"){
+            self.reponse = {}
+          }
         }
       }
     },
