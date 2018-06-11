@@ -77,11 +77,17 @@ class Authentification(Resource):
 
         data = request.get_json()
 
+        print('request.cookies : ')
+        print(request.cookies)
+
         auth = authentification(data)
         if auth == 'authentification réussie':
             token = jwt.encode({'user' : data['email'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=1)}, app.config['SECRET_KEY'])
             return jsonify({'token' : token.decode('UTF-8')})
-        return auth
+
+        rv = make_response(jsonify(auth), 200)
+        rv.set_cookie('name', 'I am cookie')
+        return rv
 
         # return make_response('Could not verify!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
 

@@ -10,13 +10,15 @@ def Existe(attribut ,valeur):
         return True
     return False
 
+
+
 def authentification(data):
     if all (k in data for k in ("email","password")):
-        if Existe('email' ,data['email']):
-            if Existe('password' ,data['password']):
+        resultat=chercherBDD('Personne', 'email', data['email'])
+        if resultat!=[]:
+            if resultat['password']==data['password']:
                 return 'authentification réussie'
-            else:
-                return 'Mauvais mot de passe'
+            return 'Mauvais mot de passe'
         return "L'adresse mail n'existe pas"
     return "Merci de remplir les champs"
 

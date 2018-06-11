@@ -5,9 +5,11 @@
 
     <router-link :to="{ name: 'Identification'}">Identification</router-link>
     <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>
+    <router-link :to="{ name: 'Accueil' }">Test VueX</router-link>
+
     <br><br><br>
     <router-view/>
-
+    <br>
   </div>
 </template>
 

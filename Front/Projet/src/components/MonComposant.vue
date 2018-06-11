@@ -122,8 +122,6 @@ export default {
 <br>
   {{message}}
 
-
-
   <li v-for="friend, i in friends">
     <div v-if="editFriend === friend.id">
       <input v-on:keyup.13="updateFriend(friend)" v-model="friend.name" />

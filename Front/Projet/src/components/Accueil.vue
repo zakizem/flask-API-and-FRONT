@@ -1,20 +1,36 @@
 <script>
+import vueStore from "../stores/vueStore"
 export default {
   name: 'Accueil',
   data() {
     return {
     }
+  },
+  computed: {
+  count () {
+    return vueStore.state.count
   }
+},
+methods: {
+  increment () {
+    vueStore.commit('increment')
+  },
+  decrement () {
+    vueStore.commit('decrement')
+  }
+}
 }
 </script>
 
 <template>
 <div class="">
-
-
+  <p>{{ count }}</p>
+  <p>
+    <button @click="increment">+</button>
+    <button @click="decrement">-</button>
+  </p>
 </div>
 </template>
-
 
 
 

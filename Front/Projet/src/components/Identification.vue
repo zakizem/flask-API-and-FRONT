@@ -36,6 +36,7 @@ export default {
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);  // TESTER SI IL Y A 'TOKEN' ICI pour le mettre dans un endroit précis dans le store
+
           console.log('reçu de l API : ');
           console.log(response);
           self.message = response;
@@ -44,7 +45,7 @@ export default {
           console.log("$window.sessionStorage.accessToken");
           console.log(window);
 
-          document.cookie = "usernamessdq=John dqsdqsDoe";
+          // document.cookie = "usernamessdq=John dqsdqsDoe";
 
 
           // response.body

@@ -6,6 +6,11 @@ architectures headless cms
 lancement git :
 cd C:\Users\zzr\flask_projets\git_repo
 
+git add -A && git commit -m "Your Message"
+git push
+
+git help
+
 serveur webpack pour vue js :
 cd flask_projets\git_repo\Front\Projet
 npm run dev
