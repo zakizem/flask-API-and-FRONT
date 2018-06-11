@@ -1,5 +1,6 @@
 <script>
-import infoStore from "../stores/infoStore"
+import vueStore from "../stores/vueStore"
+
 export default {
   name: 'Identification',
   data() {
@@ -15,10 +16,13 @@ export default {
         },
       ],
       reponse: {},
-      message: '',
-      infoStore: infoStore.data,
     }
   },
+  computed: {
+  message () {
+    return vueStore.state.message
+  }
+},
   created: function() {
     console.log('document.cookie');
     console.log(document.cookie);
@@ -36,11 +40,11 @@ export default {
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);  // TESTER SI IL Y A 'TOKEN' ICI pour le mettre dans un endroit précis dans le store
-
-          console.log('reçu de l API : ');
-          console.log(response);
-          self.message = response;
-          self.addInfo(self.message)
+          self.EcrireMessage(response)
+          // console.log('reçu de l API : ');
+          // console.log(response);
+          // self.message = response;
+          // self.addInfo(self.message)
           window.sessionStorage.accessToken = response.token;
           console.log("$window.sessionStorage.accessToken");
           console.log(window);
@@ -52,12 +56,14 @@ export default {
 
         }
         else if (xmlHttp.status == 401){
-          self.message = "ERREUR 401 ! "
+          // self.message = "ERREUR 401 ! "
+          self.EcrireMessage("ERREUR 401 ! ")
+
         }
       }
     },
-    addInfo(info) {
-      infoStore.methods.addInfo(info)
+    EcrireMessage (message) {
+      vueStore.commit('EcrireMessage', message)
     }
   }
 }

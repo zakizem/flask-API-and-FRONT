@@ -15,7 +15,7 @@ const vueStore = new Vuex.Store({
     decrement (state) {
       state.count--
     },
-    addInfo (state, message) {
+    EcrireMessage (state, message) {
       state.message = message
     }
   }

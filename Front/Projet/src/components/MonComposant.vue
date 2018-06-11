@@ -1,16 +1,22 @@
 <script>
 import infoStore from "../stores/infoStore"
+import vueStore from "../stores/vueStore"
+
 export default {
   name: 'MonComposant',
   data() {
     return {
       questions: [],
       reponse: {},
-      message: '',
       friends: [],
-      infoStore: infoStore.data,
+      // infoStore: infoStore.data,
     }
   },
+  computed: {
+  message () {
+    return vueStore.state.message
+  }
+},
 
   created: function() {
     var self = this
@@ -38,15 +44,20 @@ export default {
           var response = JSON.parse(xmlHttp.responseText);
           console.log('reçue par l API : ');
           console.log(response);
-          self.message = response;
-          self.addInfo(self.message)
-          console.log('self.message');
-          console.log(self.message);
-          // self.message = Object.assign('', self.message, response)
-          // console.log('self.message 2 ');
+          self.EcrireMessage(response)
+
+
+          // self.message = response;
+          // self.addInfo(self.message)
+          // console.log('self.message');
           // console.log(self.message);
+
+
+          // self.message = Object.assign('', self.message, response)
+
           if (typeof response === "object"){
             self.reponse = {}
+            self.EcrireMessage(response)
           }
         }
       }
@@ -65,6 +76,9 @@ export default {
     },
     addInfo(info) {
       infoStore.methods.addInfo(info)
+    },
+    EcrireMessage (message) {
+      vueStore.commit('EcrireMessage', message)
     },
     initialiserQuestions: function() {
       fetch("http://127.0.0.1:5000/1", {
