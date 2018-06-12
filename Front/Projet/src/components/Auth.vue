@@ -1,8 +1,13 @@
 <script>
+import Vue from 'vue'
+import VueSession from 'vue-session'
+Vue.use(VueSession)
+
 import vueStore from "../stores/vueStore"
 
+
 export default {
-  name: 'Identification',
+  name: 'Auth',
   data() {
     return {
       questions: [
@@ -23,15 +28,9 @@ export default {
     return vueStore.state.message
   }
 },
-  created: function() {
-    console.log('document.cookie');
-    console.log(document.cookie);
-  },
 
   methods: {
-    authentification: function() {
-      console.log("$window.sessionStorage.accessToken");
-      console.log(window);
+    login: function () {
       var self = this
       var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
       xmlHttp.open("POST", "http://127.0.0.1:5000/authentification");  //application/x-www-form-urlencoded ??? sécurité ??
@@ -39,23 +38,11 @@ export default {
       xmlHttp.send(JSON.stringify(this.reponse));
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          var response = JSON.parse(xmlHttp.responseText);  // TESTER SI IL Y A 'TOKEN' ICI pour le mettre dans un endroit précis dans le store
-          self.EcrireMessage(response)
-          // console.log('reçu de l API : ');
-          // console.log(response);
-          // self.message = response;
-          // self.addInfo(self.message)
-          window.sessionStorage.accessToken = response.token;
-          console.log("$window.sessionStorage.accessToken");
-          console.log(window);
-
-          // document.cookie = "usernamessdq=John dqsdqsDoe";
-
-        }
-        else if (xmlHttp.status == 401){
-          // self.message = "ERREUR 401 ! "
-          self.EcrireMessage("ERREUR 401 ! ")
-
+          var response = JSON.parse(xmlHttp.responseText);
+          self.$session.start()
+          self.$session.set('jwt', response.token)
+          // Vue.http.headers.common['Authorization'] = 'Bearer ' + response.body.token
+          self.$router.push('/')
         }
       }
     },
@@ -81,7 +68,7 @@ export default {
   </li>
 
   <div class="controls">
-    <button v-on:click="authentification" class="btn btn-primary">Valider</button>
+    <button v-on:click="login" class="btn btn-primary">Valider</button>
   </div>
   <br>
   {{message}}

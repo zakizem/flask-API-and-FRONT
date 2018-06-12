@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       questions: [],
-      reponse: {},
+      reponses: {},
       friends: [],
       // infoStore: infoStore.data,
     }
@@ -26,8 +26,8 @@ export default {
   beforeUpdate: function() {
     var self = this
 
-    console.log('reponse : ');
-    console.log(this.reponse);
+    console.log('reponses : ');
+    console.log(this.reponses);
     console.log('message : ');
     console.log(this.message);
   },
@@ -38,7 +38,7 @@ export default {
       var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
       xmlHttp.open("POST", "http://127.0.0.1:5000/envoi");
       xmlHttp.setRequestHeader("Content-Type", "application/json");
-      xmlHttp.send(JSON.stringify(this.reponse));
+      xmlHttp.send(JSON.stringify(this.reponses));
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
@@ -56,7 +56,7 @@ export default {
           // self.message = Object.assign('', self.message, response)
 
           if (typeof response === "object"){
-            self.reponse = {}
+            self.reponses = {}
             self.EcrireMessage(response)
           }
         }
@@ -91,11 +91,6 @@ export default {
           console.log('Request initialiserQuestions failed')
           console.log(error);
         });
-    },
-    addReponse: function (question, r) {
-      console.log('yooo');
-      this.$set(this.reponse, question, r.target.value)
-      console.log(self.reponse);
     }
   }
 }
@@ -111,8 +106,8 @@ export default {
 
     <div v-if="question.type == 'text' || question.type == 'email'">
 
-      <input v-model="reponse[question.nom_de_la_question]" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
-      <!-- <input v-on:blur="addReponse(question.nom_de_la_question, $event )"  v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" > -->
+      <input v-model="reponses[question.nom_de_la_question]" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
+      <!-- <input v-on:blur="addreponses(question.nom_de_la_question, $event )"  v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" > -->
 
     </div>
     <div v-else-if="question.type == 'liste'">
@@ -160,7 +155,7 @@ export default {
 
 <!--  coms
 
-<input v-on:blur="remplirReponse(question.nom_de_la_question ,$event)" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
+<input v-on:blur="remplirreponses(question.nom_de_la_question ,$event)" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
  <input type="text" name="" value="" v-on:click="ajout_machin" > hola
 
 

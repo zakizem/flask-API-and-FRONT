@@ -86,7 +86,7 @@ class Authentification(Resource):
             return jsonify({'token' : token.decode('UTF-8')})
 
         rv = make_response(jsonify(auth), 200)
-        rv.set_cookie('name', 'I am cookie')
+        rv.set_cookie('cookieName', 'I am cookie')
         return rv
 
         # return make_response('Could not verify!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
