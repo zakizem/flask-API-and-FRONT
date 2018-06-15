@@ -25,11 +25,6 @@ export default {
 
   beforeUpdate: function() {
     var self = this
-
-    console.log('reponses : ');
-    console.log(this.reponses);
-    console.log('message : ');
-    console.log(this.message);
   },
 
   methods: {

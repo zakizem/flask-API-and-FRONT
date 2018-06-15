@@ -3,18 +3,17 @@ fold all : ctrl+shift+p -> fold all
 vue js
 architectures headless cms
 
-lancement git :
+Lancement git :
 cd C:\Users\zzr\flask_projets\git_repo
 
 git add -A && git commit -m "Your Message"
 git push
+
 git help
 
-serveur webpack pour vue js :
+Serveur webpack/npm pour vue js (Front):
 cd flask_projets\git_repo\Front\Projet
 npm run dev
-
-commandes :
 
 LANCEMENT SERVEUR FLASK:
 cd flask_projets/git_repo/API/venv/Scripts
@@ -23,7 +22,6 @@ cd../app
 set FLASK_APP=app.py
 set FLASK_DEBUG=1
 flask run --with-threads
-
 
 SERVEUR BDD ORIENT:
 cd C:\Users\zzr\orientdb-community-importers-2.2.34\bin

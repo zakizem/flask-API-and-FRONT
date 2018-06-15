@@ -28,33 +28,65 @@ export default {
     return vueStore.state.message
   }
 },
-
+// watch:{
+// 		reponse(value){
+// 			// this.eventName();
+// 			value = this.reponse['email'];
+// 			this.check_email(value);
+// 		}
+// 	},
   methods: {
     login: function () {
       var self = this
       var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
       xmlHttp.open("POST", "http://127.0.0.1:5000/authentification");  //application/x-www-form-urlencoded ??? sécurité ??
       xmlHttp.setRequestHeader("Content-Type", "application/json");
+      xmlHttp.withCredentials = true;
       xmlHttp.send(JSON.stringify(this.reponse));
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
           self.$session.start()
           self.$session.set('jwt', response.token)
-          // Vue.http.headers.common['Authorization'] = 'Bearer ' + response.body.token
+
+
+          // console.log("response.body.token : ");
+          // console.log(response.token);
+          // Vue.http.headers.common['Authorization'] = 'Bearer ' + response.token
+
           self.$router.push('/')
+        }
+        else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
+          var response = JSON.parse(xmlHttp.responseText);
+          self.EcrireMessage(response)
+        }
+        else {
+          self.EcrireMessage("Erreur inattendue")
         }
       }
     },
     EcrireMessage (message) {
       vueStore.commit('EcrireMessage', message)
-    }
+    },
+    // check_email(value){
+    // 			if (/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value))
+    // 			{
+    //         this.EcrireMessage('');
+    // 			}
+    //       else
+    //       {
+    //         this.EcrireMessage('Adresse mail incorrecte')
+    // 			}
+    // }
   }
 }
 </script>
 
 <template>
 <div class="">
+
+  Avec vue-sessions
+  <br><br>
 
   <li v-for="question, i in questions">
 

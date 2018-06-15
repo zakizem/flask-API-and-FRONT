@@ -3,11 +3,10 @@
 
     <!-- <img src="./assets/logo.png"> -->
 
-    <router-link :to="{ name: 'Identification'}">Identification</router-link>
-    <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>
-    <router-link :to="{ name: 'Accueil' }">Test VueX</router-link>
-    <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>
-
+    <router-link :to="{ name: 'Identification'}" class="btn btn-primary">Identification</router-link>&nbsp;
+    <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>&nbsp;
+    <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>&emsp;
+    <router-link :to="{ name: 'Protected' }">Protected</router-link>&nbsp;
 
     <br><br><br>
     <router-view/>
@@ -16,9 +15,9 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
 import MonComposant from './components/MonComposant'
 import Accueil from './components/Accueil'
+import Protected from './components/Protected'
 import Identification from './components/Identification'
 
 export default {

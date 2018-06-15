@@ -23,7 +23,7 @@ from flask_restful import Resource, Api
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 api = Api(app)
 
@@ -31,6 +31,19 @@ app.config['SECRET_KEY'] = 'une_clé_secrète'
 
 # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+## Cookies
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    jwt_refresh_token_required, create_refresh_token,
+    get_jwt_identity, set_access_cookies,
+    set_refresh_cookies, unset_jwt_cookies
+)
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
+app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
+jwt = JWTManager(app)
 
 ## API rest
 
@@ -82,10 +95,25 @@ class Authentification(Resource):
 
         auth = authentification(data)
         if auth == 'authentification réussie':
-            token = jwt.encode({'user' : data['email'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=1)}, app.config['SECRET_KEY'])
-            return jsonify({'token' : token.decode('UTF-8')})
+            # Create the tokens we will be sending back to the user
+            access_token = create_access_token(identity=data['email'])
+            refresh_token = create_refresh_token(identity=data['email'])
+            print('access_token')
+            print(access_token)
 
-        rv = make_response(jsonify(auth), 200)
+            # Set the JWT cookies in the response
+            resp = jsonify({'login': True})
+            set_access_cookies(resp, access_token)
+            set_refresh_cookies(resp, refresh_token)
+            resp.status_code = 200
+            return resp
+
+
+
+            # token = jwt.encode({'user' : data['email'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=1)}, app.config['SECRET_KEY'])
+            # return jsonify({'token' : token.decode('UTF-8')})
+
+        rv = make_response(jsonify(auth), 401)
         rv.set_cookie('cookieName', 'I am cookie')
         return rv
 
