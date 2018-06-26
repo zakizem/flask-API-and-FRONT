@@ -12,7 +12,7 @@ export default {
 
 <template>
 <div class="">
-
+  <h1>Salut ! </h1>
 </div>
 </template>
 

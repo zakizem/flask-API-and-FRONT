@@ -46,22 +46,46 @@ export default {
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
-          self.$session.start()
-          self.$session.set('jwt', response.token)
-
+          // self.$session.start()
+          // self.$session.set('jwt', response.token)
 
           // console.log("response.body.token : ");
           // console.log(response.token);
           // Vue.http.headers.common['Authorization'] = 'Bearer ' + response.token
-
           self.$router.push('/')
+          self.EcrireMessage("")
         }
         else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
           var response = JSON.parse(xmlHttp.responseText);
           self.EcrireMessage(response)
         }
-        else {
+        else if (xmlHttp.readyState == 4) {
           self.EcrireMessage("Erreur inattendue")
+        }
+      }
+    },
+    appel: function(self) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", "http://127.0.0.1:5000/protected", true); // false for synchronous request
+      xmlHttp.setRequestHeader("Content-Type", "application/json");
+      xmlHttp.withCredentials = true;
+      xmlHttp.send(null);
+      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          var response = JSON.parse(xmlHttp.responseText);
+          console.log(response)
+        }
+        else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
+          // TEST SI LE MESSAGE : TOKEN EXPIRED
+          xmlHttp.open("GET", "http://127.0.0.1:5000/token/refresh", true); // false for synchronous request
+          xmlHttp.send(null);
+          xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                // access token rafraichi ??
+                response = JSON.parse(xmlHttp.responseText);
+                console.log(response);
+            }
+          }
         }
       }
     },
@@ -78,6 +102,26 @@ export default {
     //         this.EcrireMessage('Adresse mail incorrecte')
     // 			}
     // }
+    logout: function () {
+      var self = this
+      var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
+      xmlHttp.open("POST", "http://127.0.0.1:5000/token/logout");  //application/x-www-form-urlencoded ??? sécurité ??
+      xmlHttp.setRequestHeader("Content-Type", "application/json");
+      xmlHttp.withCredentials = true;
+      xmlHttp.send(null);
+      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          // var response = JSON.parse(xmlHttp.responseText);
+          // // self.$router.push('/')
+          // self.EcrireMessage(response)
+          console.log('lougout réussi ??');
+        }
+        else if (xmlHttp.readyState == 4) {
+          var response = JSON.parse(xmlHttp.responseText);
+          self.EcrireMessage(response)
+        }
+      }
+    },
   }
 }
 </script>
@@ -104,6 +148,10 @@ export default {
   </div>
   <br>
   {{message}}
+  <button v-on:click="appel" class="btn btn-primary">Appel api</button>
+  <button v-on:click="logout" class="btn btn-primary">Logout</button>
+
+
 
 </div>
 </template>

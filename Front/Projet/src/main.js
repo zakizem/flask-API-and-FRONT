@@ -46,8 +46,6 @@ router.afterEach((to, from) => {
   console.log(`Global -- afterEach - Just moved from '${from.path}' to '${to.path}'`)
 })
 
-
-
 new Vue({
   el: '#app',
   router: router,

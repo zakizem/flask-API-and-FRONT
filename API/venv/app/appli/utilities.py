@@ -16,7 +16,7 @@ def authentification(data):
     if all (k in data for k in ("email","password")):
         resultat=chercherBDD('Personne', 'email', data['email'])
         if resultat!=[]:
-            if resultat['password']==data['password']:
+            if 'password' in resultat and resultat['password']==data['password']:
                 return 'authentification réussie'
             return 'Mauvais mot de passe'
         return "L'adresse mail n'existe pas"

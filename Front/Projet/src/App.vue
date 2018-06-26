@@ -15,17 +15,17 @@
 </template>
 
 <script>
-import MonComposant from './components/MonComposant'
-import Accueil from './components/Accueil'
-import Protected from './components/Protected'
-import Identification from './components/Identification'
+// import MonComposant from './components/MonComposant'
+// import Accueil from './components/Accueil'
+// import Protected from './components/Protected'
+// import Identification from './components/Identification'
 
 export default {
   name: 'App',
   components: {
-    MonComposant,
-    Accueil,
-    Identification
+    // MonComposant,
+    // Accueil,
+    // Identification
   }
 }
 </script>

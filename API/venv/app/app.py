@@ -39,10 +39,17 @@ from flask_jwt_extended import (
     set_refresh_cookies, unset_jwt_cookies
 )
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
-app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=5)
+# app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=60)
+
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/'          #'/api/'
+app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/'        #'/token/refresh'
+
+# app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
+# app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
+app.config['JWT_SECRET_KEY'] = 'clé super secrète man'  # Change this!
 jwt = JWTManager(app)
 
 ## API rest
@@ -79,7 +86,7 @@ class Reponses(Resource):
     def post(self):
         data=request.get_json()
         if 'email' in data:
-            if Existe('email ',data['email']):
+            if Existe('email ',data['email']):   #Enlever ça pour le update ??
                 return 'Le mail existe déja'
             SauvgarderDoc(data, 'Personne')
             resultat=chercherBDD('Personne','email', data['email'])
@@ -114,7 +121,7 @@ class Authentification(Resource):
             # return jsonify({'token' : token.decode('UTF-8')})
 
         rv = make_response(jsonify(auth), 401)
-        rv.set_cookie('cookieName', 'I am cookie')
+        rv.set_cookie('Un Cookie', 'I am cookie', secure=False, path='/', httponly=False)
         return rv
 
         # return make_response('Could not verify!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
@@ -123,11 +130,64 @@ class Authentification(Resource):
         # data=request.get_json()
         # return authentification(data)
 
+class Protected(Resource):
+    decorators = [jwt_required]
+    def get(self):
+        d=jsonify({'message' : 'rak dkheltttt'})
+        print('d = : ')
+        print(d)
+        return d
+        # username = get_jwt_identity()
+        # return jsonify({'hello': 'from {}'.format(username)}), 200
+
+class Refresh(Resource):
+    decorators = [jwt_refresh_token_required]
+    def get(self):
+        # Create the new access token
+        current_user = get_jwt_identity()
+        access_token = create_access_token(identity=current_user)
+
+        # Set the JWT access cookie in the response
+        resp = jsonify({'refresh': True})
+        set_access_cookies(resp, access_token)
+
+        resp.status_code = 200
+        return resp
+
+class Logout(Resource):
+    def post(self):
+        resp = jsonify({'logout': True})
+        unset_jwt_cookies(resp)
+        resp.status_code = 200
+        return resp
+
 api.add_resource(Questions, '/1')
 api.add_resource(Reponses, '/envoi')
 api.add_resource(Authentification, '/authentification')
+api.add_resource(Protected, '/protected')
+api.add_resource(Refresh, '/token/refresh')
+api.add_resource(Logout, '/token/logout')
 
 ##### API
+
+
+
+# Same thing as login here, except we are only setting a new cookie
+# for the access token.
+
+
+
+# Because the JWTs are stored in an httponly cookie now, we cannot
+# log the user out by simply deleting the cookie in the frontend.
+# We need the backend to send us a response to delete the cookies
+# in order to logout. unset_jwt_cookies is a helper function to
+# do just that.
+# @app.route('/token/remove', methods=['POST'])
+# def logout():
+#     resp = jsonify({'logout': True})
+#     unset_jwt_cookies(resp)
+#     return resp, 200
+
 
 def token_required(f):
     @wraps(f)
@@ -152,10 +212,10 @@ def token_required(f):
 def unprotected():
     return jsonify({'message' : 'Anyone can view this!'})
 
-@app.route('/protected')
-@token_required
-def protected():
-    return jsonify({'message' : 'This is only available for people with valid tokens.'})
+# @app.route('/protected')
+# @token_required
+# def protected():
+#     return jsonify({'message' : 'This is only available for people with valid tokens.'})
 
 @app.route('/login')
 def login():

@@ -19,12 +19,12 @@ export default {
 },
 
   created: function() {
-    var self = this
-    this.setQuestions(self);
+    // var self = this
+    this.setQuestions(this);
   },
 
   beforeUpdate: function() {
-    var self = this
+    // var self = this
   },
 
   methods: {
