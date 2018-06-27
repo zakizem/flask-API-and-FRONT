@@ -11,6 +11,8 @@ Vue.use(VueRouter);
 
 Vue.config.productionTip = false
 
+import infoStore from "./stores/infoStore"
+
 const router = new VueRouter({
   routes: routes,
 });
@@ -21,8 +23,12 @@ router.beforeEach((to, from, next) => {
   console.log('Global -- beforeEach - fired')
 
   if (to.path === '/Protected') {
-
-    next('/Auth')
+    if (infoStore.state.infos['login']===false) {
+      next('/Auth')
+    }
+    else {
+      next()
+    }
   }
   else if (to.path === '/error') {
     const err = new Error('My Error Message')
@@ -50,5 +56,5 @@ new Vue({
   el: '#app',
   router: router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
 })

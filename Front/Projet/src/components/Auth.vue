@@ -4,7 +4,7 @@ import VueSession from 'vue-session'
 Vue.use(VueSession)
 
 import vueStore from "../stores/vueStore"
-
+import infoStore from "../stores/infoStore"
 
 export default {
   name: 'Auth',
@@ -46,13 +46,16 @@ export default {
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
-          // self.$session.start()
-          // self.$session.set('jwt', response.token)
+          console.log('reponse : ');
+          console.log(response);
 
-          // console.log("response.body.token : ");
-          // console.log(response.token);
-          // Vue.http.headers.common['Authorization'] = 'Bearer ' + response.token
-          self.$router.push('/')
+          console.log("response['email']");
+          console.log(response.email);
+
+          self.addInfo(response)
+          // infoStore.commit('login')
+
+          self.$router.push('/Protected')
           self.EcrireMessage("")
         }
         else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
@@ -64,33 +67,12 @@ export default {
         }
       }
     },
-    appel: function(self) {
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", "http://127.0.0.1:5000/protected", true); // false for synchronous request
-      xmlHttp.setRequestHeader("Content-Type", "application/json");
-      xmlHttp.withCredentials = true;
-      xmlHttp.send(null);
-      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          var response = JSON.parse(xmlHttp.responseText);
-          console.log(response)
-        }
-        else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-          // TEST SI LE MESSAGE : TOKEN EXPIRED
-          xmlHttp.open("GET", "http://127.0.0.1:5000/token/refresh", true); // false for synchronous request
-          xmlHttp.send(null);
-          xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                // access token rafraichi ??
-                response = JSON.parse(xmlHttp.responseText);
-                console.log(response);
-            }
-          }
-        }
-      }
-    },
+
     EcrireMessage (message) {
       vueStore.commit('EcrireMessage', message)
+    },
+    addInfo (info) {
+      infoStore.commit('addInfo', info)
     },
     // check_email(value){
     // 			if (/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value))
@@ -102,26 +84,7 @@ export default {
     //         this.EcrireMessage('Adresse mail incorrecte')
     // 			}
     // }
-    logout: function () {
-      var self = this
-      var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
-      xmlHttp.open("POST", "http://127.0.0.1:5000/token/logout");  //application/x-www-form-urlencoded ??? sécurité ??
-      xmlHttp.setRequestHeader("Content-Type", "application/json");
-      xmlHttp.withCredentials = true;
-      xmlHttp.send(null);
-      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          // var response = JSON.parse(xmlHttp.responseText);
-          // // self.$router.push('/')
-          // self.EcrireMessage(response)
-          console.log('lougout réussi ??');
-        }
-        else if (xmlHttp.readyState == 4) {
-          var response = JSON.parse(xmlHttp.responseText);
-          self.EcrireMessage(response)
-        }
-      }
-    },
+
   }
 }
 </script>
@@ -148,14 +111,10 @@ export default {
   </div>
   <br>
   {{message}}
-  <button v-on:click="appel" class="btn btn-primary">Appel api</button>
-  <button v-on:click="logout" class="btn btn-primary">Logout</button>
-
 
 
 </div>
 </template>
-
 
 
 
@@ -167,7 +126,6 @@ export default {
 <!--  coms
 
 <input :required="test ? true : false">
-
 
 <input v-on:blur="remplirReponse(question.nom_de_la_question ,$event)" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
  <input type="text" name="" value="" v-on:click="ajout_machin" > hola
@@ -187,7 +145,6 @@ export default {
     // //    resolve()
     // //     })
     // // })
-
 
     // envoyerRequeteAvecParametres(parametre) {
     //   alert('1')

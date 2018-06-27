@@ -3,6 +3,8 @@
 
     <!-- <img src="./assets/logo.png"> -->
 
+  <Accueil></Accueil>
+<br>
     <router-link :to="{ name: 'Identification'}" class="btn btn-primary">Identification</router-link>&nbsp;
     <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>&nbsp;
     <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>&emsp;
@@ -16,7 +18,7 @@
 
 <script>
 // import MonComposant from './components/MonComposant'
-// import Accueil from './components/Accueil'
+import Accueil from './components/Accueil'
 // import Protected from './components/Protected'
 // import Identification from './components/Identification'
 
@@ -24,7 +26,7 @@ export default {
   name: 'App',
   components: {
     // MonComposant,
-    // Accueil,
+    Accueil,
     // Identification
   }
 }

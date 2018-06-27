@@ -14,7 +14,6 @@ from appli.model import *
 from appli.form import *
 from appli.traitementExceptions import *
 
-
 import rethinkdb as r
 
 ## API rest
@@ -54,7 +53,6 @@ jwt = JWTManager(app)
 
 ## API rest
 
-
 # app.secret_key = 'clé_secrète'            # à terme, utiliser un générateur auto de secret keys
 
 app.register_blueprint(traitementExceptions)
@@ -66,14 +64,10 @@ app.debug = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
-
-
 @app.route('/')
 def index():
     #return ('API en marche..')
     return render_template("vueJS/index.html")
-
-
 
 ##### API avec flask_restful
 
@@ -94,48 +88,30 @@ class Reponses(Resource):
 
 class Authentification(Resource):
     def post(self):
-
         data = request.get_json()
-
-        print('request.cookies : ')
-        print(request.cookies)
-
         auth = authentification(data)
         if auth == 'authentification réussie':
-            # Create the tokens we will be sending back to the user
+            # Creation des tokens
             access_token = create_access_token(identity=data['email'])
             refresh_token = create_refresh_token(identity=data['email'])
-            print('access_token')
-            print(access_token)
+
+            infos=chercherBDD('Personne','email',data['email'])
 
             # Set the JWT cookies in the response
-            resp = jsonify({'login': True})
+            resp = jsonify({'login': True,'prenom': infos['prenom']})
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
             resp.status_code = 200
             return resp
-
-
-
-            # token = jwt.encode({'user' : data['email'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=1)}, app.config['SECRET_KEY'])
-            # return jsonify({'token' : token.decode('UTF-8')})
-
         rv = make_response(jsonify(auth), 401)
         rv.set_cookie('Un Cookie', 'I am cookie', secure=False, path='/', httponly=False)
         return rv
 
-        # return make_response('Could not verify!', 401, {'WWW-Authenticate' : 'Basic realm="Login Required"'})
-
-        # à la base c'était :
-        # data=request.get_json()
-        # return authentification(data)
 
 class Protected(Resource):
     decorators = [jwt_required]
     def get(self):
-        d=jsonify({'message' : 'rak dkheltttt'})
-        print('d = : ')
-        print(d)
+        d=jsonify({'message' : 'Contenu protégé accessible'})
         return d
         # username = get_jwt_identity()
         # return jsonify({'hello': 'from {}'.format(username)}), 200
@@ -170,12 +146,8 @@ api.add_resource(Logout, '/token/logout')
 
 ##### API
 
-
-
 # Same thing as login here, except we are only setting a new cookie
 # for the access token.
-
-
 
 # Because the JWTs are stored in an httponly cookie now, we cannot
 # log the user out by simply deleting the cookie in the frontend.
@@ -187,7 +159,6 @@ api.add_resource(Logout, '/token/logout')
 #     resp = jsonify({'logout': True})
 #     unset_jwt_cookies(resp)
 #     return resp, 200
-
 
 def token_required(f):
     @wraps(f)
