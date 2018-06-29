@@ -1,5 +1,4 @@
 <script>
-import vueStore from "../stores/vueStore"
 import infoStore from "../stores/infoStore"
 
 export default {
@@ -16,7 +15,7 @@ export default {
     appel: function() {
       var self = this
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", "http://127.0.0.1:5000/protected", true); // false for synchronous request
+      xmlHttp.open("GET", "http://127.0.0.1:5000/protected", true);
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.withCredentials = true;
       xmlHttp.send(null);
@@ -27,7 +26,7 @@ export default {
         }
         else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
           // TEST SI LE MESSAGE : TOKEN EXPIRED
-          xmlHttp.open("GET", "http://127.0.0.1:5000/token/refresh", true); // false for synchronous request
+          xmlHttp.open("GET", "http://127.0.0.1:5000/token/refresh", true);
           xmlHttp.send(null);
           xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -48,7 +47,7 @@ export default {
       xmlHttp.send(null);
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          console.log('lougout réussi ??');
+          console.log('lougout réussi');
           infoStore.commit('infoInit')
           self.$router.push('/Auth')
         }

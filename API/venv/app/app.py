@@ -144,7 +144,7 @@ api.add_resource(Protected, '/protected')
 api.add_resource(Refresh, '/token/refresh')
 api.add_resource(Logout, '/token/logout')
 
-##### API
+##### FIN API
 
 # Same thing as login here, except we are only setting a new cookie
 # for the access token.

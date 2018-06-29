@@ -1,19 +1,18 @@
 <template>
-  <div id="app">
+<div id="app">
 
-    <!-- <img src="./assets/logo.png"> -->
+  <!-- <img src="./assets/logo.png"> -->
 
   <Accueil></Accueil>
-<br>
-    <router-link :to="{ name: 'Identification'}" class="btn btn-primary">Identification</router-link>&nbsp;
-    <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>&nbsp;
-    <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>&emsp;
-    <router-link :to="{ name: 'Protected' }">Protected</router-link>&nbsp;
+  <br>
+  <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>&nbsp;
+  <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>&emsp;
+  <router-link :to="{ name: 'Protected' }">Protected</router-link>&nbsp;
 
-    <br><br><br>
-    <router-view/>
-    <br>
-  </div>
+  <br><br><br>
+  <router-view/>
+  <br>
+</div>
 </template>
 
 <script>

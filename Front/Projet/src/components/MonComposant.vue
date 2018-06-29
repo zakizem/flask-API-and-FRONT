@@ -8,18 +8,16 @@ export default {
     return {
       questions: [],
       reponses: {},
-      friends: [],
       // infoStore: infoStore.data,
     }
   },
   computed: {
-  message () {
-    return vueStore.state.message
-  }
-},
+    message() {
+      return vueStore.state.message
+    }
+  },
 
   created: function() {
-    // var self = this
     this.setQuestions(this);
   },
 
@@ -30,7 +28,7 @@ export default {
   methods: {
     envoiAPI: function() {
       var self = this
-      var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
+      var xmlHttp = new XMLHttpRequest(); // new HttpRequest instance
       xmlHttp.open("POST", "http://127.0.0.1:5000/envoi");
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.send(JSON.stringify(this.reponses));
@@ -40,17 +38,7 @@ export default {
           console.log('reçue par l API : ');
           console.log(response);
           self.EcrireMessage(response)
-
-
-          // self.message = response;
-          // self.addInfo(self.message)
-          // console.log('self.message');
-          // console.log(self.message);
-
-
-          // self.message = Object.assign('', self.message, response)
-
-          if (typeof response === "object"){
+          if (typeof response === "object") {
             self.reponses = {}
             self.EcrireMessage(response)
           }
@@ -59,20 +47,19 @@ export default {
     },
     setQuestions: function(self) {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", "http://127.0.0.1:5000/1", true); // false for synchronous request
+      xmlHttp.open("GET", "http://127.0.0.1:5000/1", true);
       xmlHttp.send(null);
-      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
+      xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
           self.questions = Object.assign({}, self.questions, response)
-          // self.questions = response;
         }
       }
     },
     addInfo(info) {
       infoStore.methods.addInfo(info)
     },
-    EcrireMessage (message) {
+    EcrireMessage(message) {
       vueStore.commit('EcrireMessage', message)
     },
     initialiserQuestions: function() {
@@ -101,7 +88,7 @@ export default {
 
     <div v-if="question.type == 'text' || question.type == 'email'">
 
-      <input v-model="reponses[question.nom_de_la_question]" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
+      <input v-model="reponses[question.nom_de_la_question]" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question">
       <!-- <input v-on:blur="addreponses(question.nom_de_la_question, $event )"  v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" > -->
 
     </div>
@@ -123,8 +110,7 @@ export default {
   <div class="controls">
     <button v-on:click="envoiAPI" class="btn btn-primary">Valider</button>
   </div>
-<br>
-  {{message}}
+  <br> {{message}}
 
   <li v-for="friend, i in friends">
     <div v-if="editFriend === friend.id">
