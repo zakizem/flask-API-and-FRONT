@@ -12,6 +12,7 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false
 
 import infoStore from "./stores/infoStore"
+import vueStore from "./stores/vueStore"
 
 const router = new VueRouter({
   routes: routes,

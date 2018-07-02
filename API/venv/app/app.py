@@ -80,7 +80,7 @@ class Reponses(Resource):
     def post(self):
         data=request.get_json()
         if 'email' in data:
-            if Existe('email ',data['email']):   #Enlever ça pour le update ??
+            if Existe('email ',data['email']):   #Enlever ça pour le update et mettre un décorateur ??
                 return 'Le mail existe déja'
             SauvgarderDoc(data, 'Personne')
             resultat=chercherBDD('Personne','email', data['email'])
@@ -106,7 +106,6 @@ class Authentification(Resource):
         rv = make_response(jsonify(auth), 401)
         rv.set_cookie('Un Cookie', 'I am cookie', secure=False, path='/', httponly=False)
         return rv
-
 
 class Protected(Resource):
     decorators = [jwt_required]
@@ -137,8 +136,8 @@ class Logout(Resource):
         resp.status_code = 200
         return resp
 
-api.add_resource(Questions, '/1')
-api.add_resource(Reponses, '/envoi')
+api.add_resource(Questions, '/questions')
+api.add_resource(Reponses, '/envoiReponses')
 api.add_resource(Authentification, '/authentification')
 api.add_resource(Protected, '/protected')
 api.add_resource(Refresh, '/token/refresh')

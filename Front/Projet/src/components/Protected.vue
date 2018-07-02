@@ -32,11 +32,8 @@ methods: {
 </div>
 </template>
 
-
-
 <style lang="css">
 </style>
-
 
 
 <!--  coms

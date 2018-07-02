@@ -1,10 +1,11 @@
 // Make sure to call Vue.use(Vuex) first if using a module system
 import Vue from 'vue'
 import Vuex from 'vuex'
-Vue.use(Vuex)
 
 import createPersistedState from "vuex-persistedstate";
 import * as Cookies from "js-cookie";
+
+Vue.use(Vuex)
 
 const vueStore = new Vuex.Store({
   state: {

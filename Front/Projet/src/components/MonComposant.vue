@@ -29,7 +29,7 @@ export default {
     envoiAPI: function() {
       var self = this
       var xmlHttp = new XMLHttpRequest(); // new HttpRequest instance
-      xmlHttp.open("POST", "http://127.0.0.1:5000/envoi");
+      xmlHttp.open("POST", "http://127.0.0.1:5000/envoiReponses");
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.send(JSON.stringify(this.reponses));
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
@@ -47,7 +47,7 @@ export default {
     },
     setQuestions: function(self) {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", "http://127.0.0.1:5000/1", true);
+      xmlHttp.open("GET", "http://127.0.0.1:5000/questions", true);
       xmlHttp.send(null);
       xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -63,7 +63,7 @@ export default {
       vueStore.commit('EcrireMessage', message)
     },
     initialiserQuestions: function() {
-      fetch("http://127.0.0.1:5000/1", {
+      fetch("http://127.0.0.1:5000/questions", {
           method: 'get'
         })
         .then(response => response.json())
@@ -112,7 +112,7 @@ export default {
   </div>
   <br> {{message}}
 
-  <li v-for="friend, i in friends">
+  <!-- <li v-for="friend, i in friends">
     <div v-if="editFriend === friend.id">
       <input v-on:keyup.13="updateFriend(friend)" v-model="friend.name" />
       <button v-on:click="updateFriend(friend)">save</button>
@@ -121,7 +121,7 @@ export default {
       <button v-on:click="editFriend = friend.id">edit</button>
       <button v-on:click="deleteFriend(friend.id, i)">x</button> {{friend.name}}
     </div>
-  </li>
+  </li> -->
 
 </div>
 </template>

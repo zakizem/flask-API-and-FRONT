@@ -12,16 +12,16 @@ const infoStore = new Vuex.Store({
     infos: {'login': false, 'prenom': ''},
   },
   plugins: [createPersistedState({
-    storage: {
-      getItem: key => Cookies.get(key),
-      setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
-      removeItem: key => Cookies.remove(key)
-    }
+    // storage: {
+    //   getItem: key => Cookies.get(key),
+    //   setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
+    //   removeItem: key => Cookies.remove(key)
+    // }
   })],
   mutations: {
     addInfo(state, info) {
       state.infos = Object.assign(state.infos, info);
-      localStorage.setItem({'monChat': 'Tom'});
+      // localStorage.setItem('monChat', 'Tom');
     },
     infoInit(state) {
       state.infos= {'prenom': '', 'login': false}

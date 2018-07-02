@@ -12,7 +12,7 @@ export default {
     }
   },
   methods: {
-    appel: function() {
+    appel_ressource_protected: function() {
       var self = this
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("GET", "http://127.0.0.1:5000/protected", true);
@@ -33,6 +33,7 @@ export default {
                 // access token rafraichi ??
                 response = JSON.parse(xmlHttp.responseText);
                 console.log(response);
+                self.appel_ressource_protected()
             }
           }
         }
@@ -47,7 +48,7 @@ export default {
       xmlHttp.send(null);
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          console.log('lougout réussi');
+          console.log('lougout réussi?');
           infoStore.commit('infoInit')
           self.$router.push('/Auth')
         }
@@ -65,7 +66,7 @@ export default {
 <template>
 <div class="">
   <h1 v-if="'prenom' in infos && infos['prenom']!=''">Salut {{infos['prenom']}} !</h1>
-  <button v-on:click="appel" class="btn btn-primary">Appel api</button>
+  <button v-on:click="appel_ressource_protected" class="btn btn-primary">appel à une ressource protégée de l'api</button>
   <button v-on:click="logout" class="btn btn-primary">Logout</button>
 </div>
 </template>
@@ -86,7 +87,7 @@ export default {
     //       console.log('1');
     //       this.httpGet();
     //       console.log('uno et demi');
-    //       // this.appel_API("http://127.0.0.1:5000/1");
+    //       // this.appel_ressource_protected_API("http://127.0.0.1:5000/1");
     //       // console.log('tresss');
     //       // alert(this.questions);
     //       console.log('this.questions (dans created) : '+this.questions);
