@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Accueil from '@/components/Accueil'
+import Header from '@/components/Header'
 import Protected from '@/components/Protected'
-import Identification from '@/components/Identification'
-import MonComposant from '@/components/MonComposant'
+import Questionnaire from '@/components/Questionnaire'
 import Auth from '@/components/Auth'
+import Accueil from '@/components/Accueil'
+
 
 Vue.use(Router)
 
 export const routes = [
       {
-        path: '/',
+        path: '/Accueil',
         name: 'Accueil',
         component: Accueil
       },
@@ -20,14 +21,9 @@ export const routes = [
         component: Protected
       },
       {
-        path: '/Identification',
-        name: 'Identification',
-        component: Identification
-      },
-      {
-        path: '/Formulaire',
-        name: 'MonComposant',
-        component: MonComposant
+        path: '/Questionnaire',
+        name: 'Questionnaire',
+        component: Questionnaire
       },
       {
         path: '/Auth',

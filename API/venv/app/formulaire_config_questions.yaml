@@ -1,29 +1,59 @@
-- nom_de_la_question: email
-  texte: 'Adresse mail : '
-  type: email
-  saisie_obligatoire: oui
-- nom_de_la_question: password
-  texte: 'Mot de passe : '
-  type: text
-  saisie_obligatoire: oui
-- nom_de_la_question: prenom
-  texte: 'prenom : '
-  type: text
-  saisie_obligatoire: oui
-- nom_de_la_question: nom
-  texte: 'Nom : '
-  type: text
-  saisie_obligatoire: oui
-- nom_de_la_question: destination
-  texte: 'Destination de vacances favorite : '
-  type: liste
-  choix:
-    - Budapest
-    - Amsterdam
-    - Turin
-    - Bamako
-  saisie_obligatoire: non
-- nom_de_la_question: age
-  texte: 'Age : '
-  type: text
-  saisie_obligatoire: non
+identite:
+  - nom_de_la_question: prenom
+    label: 'prenom : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: nom
+    label: 'Nom : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: destination
+    label: 'Destination de vacances favorite : '
+    type: liste
+    choix:
+      - Budapest
+      - Amsterdam
+      - Turin
+      - Bamako
+    saisie_obligatoire: non
+  - nom_de_la_question: age
+    label: 'Age : '
+    type: text
+    saisie_obligatoire: non
+  - nom_de_la_question: sexe
+    label: 'Sexe : '
+    type: radio
+    choix:
+      - Masculin
+      - Feminin
+consultation:
+  - nom_de_la_question: dateconsultation
+    label: 'date de consultation : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: connu
+    label: 'Comment avez-vous connu cette Consultation : '
+    type: text
+    saisie_obligatoire: oui
+donneesPatient:
+  - nom_de_la_question: profession
+    label: 'profession : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: poids
+    label: 'Poids : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: taille
+    label: 'Taille : '
+    type: text
+    saisie_obligatoire: oui
+atcd:
+  - nom_de_la_question: diabeteType2
+    label: 'Diabète de type 2 : '
+    type: text
+    saisie_obligatoire: oui
+  - nom_de_la_question: ageDiagnostiqueDiabete
+    label: 'Age au diagnostic diabète : '
+    type: text
+    saisie_obligatoire: oui

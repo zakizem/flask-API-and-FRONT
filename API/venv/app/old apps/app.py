@@ -30,7 +30,7 @@ app.config['SECRET_KEY'] = 'une_clé_secrète'
 
 # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-## Cookies
+# Cookies
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     jwt_refresh_token_required, create_refresh_token,
@@ -38,7 +38,10 @@ from flask_jwt_extended import (
     set_refresh_cookies, unset_jwt_cookies
 )
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=5)
+app.config['JWT_SESSION_COOKIE'] = True
+
+
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(seconds=3)
 # app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(seconds=60)
 
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/'          #'/api/'
@@ -67,6 +70,20 @@ toolbar = DebugToolbarExtension(app)
 @app.route('/')
 def index():
     #return ('API en marche..')
+    data=chercherCategorie('Personne', 'email', 'ola', 'identite')
+    print('resultat recherche catég : ')
+    print(data)
+
+    data= lireDuFichier('formulaire_config_questions.yaml')
+    print('TYPE resultat recherche identite: ')
+    print(type(data['identite']))
+
+    str = ''
+    for key in data:
+        str = str + ' ' + key
+
+    return jsonify(str)
+
     return render_template("vueJS/index.html")
 
 ##### API avec flask_restful
@@ -74,17 +91,67 @@ def index():
 class Questions(Resource):
     def get(self):
         data= lireDuFichier('formulaire_config_questions.yaml')
-        return jsonify(data)
+        return jsonify(data['identite'])
 
-class Reponses(Resource):
+class QuestionsCategorie(Resource):
+    def get(self, categorie):
+        data= lireDuFichier('formulaire_config_questions.yaml')
+
+        etapes = []
+        for key in data:
+            etapes.append(key)
+
+        if categorie in data:
+            print(data[categorie])
+            return jsonify(data[categorie])
+        return 'categorie inexistante', 404
+
+class questionsNext(Resource):
+    def get(self, categorieCourante):
+        data= lireDuFichier('formulaire_config_questions.yaml')
+        i = 0
+        for key in data:
+            if i == 1:
+                return jsonify({ 'etapeCourante' : key, 'data' : data[key]})
+            elif key == categorieCourante:
+                i=i+1
+        return 'erreur', 404
+
+class QuestionsPrecedentes(Resource):
+    def get(self, categorieCourante):
+        data= lireDuFichier('formulaire_config_questions.yaml')
+        avant = ''
+        for key in data:
+            if key == categorieCourante:
+                if avant != '':
+                    return jsonify({ 'etapeCourante' : avant, 'data' : data[avant]})
+            avant = key
+        return 'erreur', 404
+
+class InsertionReponses(Resource):
+    decorators = [jwt_required]
+    def post(self):
+        data=request.get_json(force=True)
+        return data
+        current_user = get_jwt_identity()
+        print('current user : ')
+        print(current_user)
+
+        if Existe('email',current_user):   #Enlever ça pour le update et mettre un décorateur ??
+            # return 'Le mail existe déja'     # Ajouter status
+            update('Personne',data, current_user)
+            return 'contenu mis à jour', 200
+
+        return 'Le mail n existe pas', 400
+
+        # SauvgarderDoc(data, 'Personne')
+        # resultat=chercherBDD('Personne','email', data['email'])
+        # return resultat
+
+class Signup(Resource):
     def post(self):
         data=request.get_json()
-        if 'email' in data:
-            if Existe('email ',data['email']):   #Enlever ça pour le update et mettre un décorateur ??
-                return 'Le mail existe déja'
-            SauvgarderDoc(data, 'Personne')
-            resultat=chercherBDD('Personne','email', data['email'])
-            return resultat
+        return signup(data)
 
 class Authentification(Resource):
     def post(self):
@@ -98,7 +165,7 @@ class Authentification(Resource):
             infos=chercherBDD('Personne','email',data['email'])
 
             # Set the JWT cookies in the response
-            resp = jsonify({'login': True,'prenom': infos['prenom']})
+            resp = jsonify({'login': True,'data': infos})
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
             resp.status_code = 200
@@ -136,12 +203,18 @@ class Logout(Resource):
         resp.status_code = 200
         return resp
 
-api.add_resource(Questions, '/questions')
-api.add_resource(Reponses, '/envoiReponses')
+api.add_resource(Questions, '/questions')  #inutilisée
+api.add_resource(InsertionReponses, '/envoiReponses')
 api.add_resource(Authentification, '/authentification')
 api.add_resource(Protected, '/protected')
+api.add_resource(Signup, '/signup')
+
 api.add_resource(Refresh, '/token/refresh')
 api.add_resource(Logout, '/token/logout')
+
+api.add_resource(QuestionsCategorie, '/questionsCategorie/<string:categorie>', endpoint = 'QuestionsCategorie')
+api.add_resource(questionsNext, '/questionsCategorieSuivante/<string:categorieCourante>', endpoint = 'questionsNext')
+api.add_resource(QuestionsPrecedentes, '/questionsCategoriePrecedente/<string:categorieCourante>', endpoint = 'QuestionsPrecedentes')
 
 ##### FIN API
 
@@ -176,8 +249,6 @@ def token_required(f):
 
     return decorated
 
-
-
 @app.route('/unprotected')
 def unprotected():
     return jsonify({'message' : 'Anyone can view this!'})
@@ -204,7 +275,7 @@ def login():
 
 @app.route('/identification', methods=['POST'])
 def identification():
-    resultat_validation=validation_identifiants(request.form['email_accueil'], request.form['password_accueil'])
+    resultat_validation=validation_identite(request.form['email_accueil'], request.form['password_accueil'])
     if(type(resultat_validation)) == str:
         return resultat_validation
     setSession(resultat_validation)
@@ -271,7 +342,7 @@ def envoiUpdate():
 
 @app.route('/identificationOLD', methods=['POST'])
 def identificationOLD():
-    resultat_validation=validation_identifiants(request.form['email_accueil'], request.form['password_accueil'])
+    resultat_validation=validation_identite(request.form['email_accueil'], request.form['password_accueil'])
     if(type(resultat_validation)) == str:
         return resultat_validation
     setSession(resultat_validation)
@@ -415,4 +486,4 @@ formulaire = [
 
 if __name__ == "__main__":
     print (__name__)
-    app.run(host="127.0.0.1", port=5000, threaded=True)
+    app.run(host="127.0.0.1", port=8016, threaded=True)

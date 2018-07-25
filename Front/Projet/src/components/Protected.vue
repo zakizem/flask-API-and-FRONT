@@ -48,7 +48,7 @@ methods: {
     //       console.log('1');
     //       this.httpGet();
     //       console.log('uno et demi');
-    //       // this.appel_API("http://127.0.0.1:5000/1");
+    //       // this.appel_API("http://127.0.0.1:8011/1");
     //       // console.log('tresss');
     //       // alert(this.questions);
     //       console.log('this.questions (dans created) : '+this.questions);
@@ -60,7 +60,7 @@ methods: {
 
     // envoyerRequeteAvecParametres(parametre) {
     //   alert('1')
-    //   fetch("http://127.0.0.1:5000/1", {
+    //   fetch("http://127.0.0.1:8011/1", {
     //     body: JSON.stringify(parametre),
     //   })
     //   .then(() => {

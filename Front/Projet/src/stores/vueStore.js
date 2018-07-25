@@ -8,6 +8,7 @@ import * as Cookies from "js-cookie";
 Vue.use(Vuex)
 
 const vueStore = new Vuex.Store({
+  strict: true,
   state: {
     count: 0,
     message: ''

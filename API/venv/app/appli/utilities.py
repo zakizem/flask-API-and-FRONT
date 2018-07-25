@@ -10,8 +10,6 @@ def Existe(attribut ,valeur):
         return True
     return False
 
-
-
 def authentification(data):
     if all (k in data for k in ("email","password")):
         resultat=chercherBDD('Personne', 'email', data['email'])
@@ -22,7 +20,16 @@ def authentification(data):
         return "L'adresse mail n'existe pas"
     return "Merci de remplir les champs"
 
-######### avant API :
+def signup(data):
+    if all (k in data for k in ("email","password")):
+        if Existe('email ',data['email']):
+            return 'Le mail existe déja', 401     # Ajouter status
+        # faire des tests d'intégrité des emails et mdp ?
+        SauvgarderDoc({'email' : data['email'], 'password': data['password']}, 'Personne')
+        return 'fait', 200                       # Ajouter status
+    return 'Merci de remplir les champs', 401     # Ajouter status
+
+######### avant API (il y en a qui sont toujours utilisées):
 
 def login_required(f):
     @wraps(f)
@@ -78,17 +85,20 @@ def lireDuFichier(fichier):
     with open(fichier, 'r') as stream:
         data_loaded = yaml.load(stream)
 
-    print ("Nom des questions unique dans le formulaire ? ")
-    print(nomUniqueFormulaire(data_loaded))
+    # print ("Nom des questions unique dans le formulaire ? ")
+    # print(nomUniqueFormulaire(data_loaded))
 
     return data_loaded
 
 def nomUniqueFormulaire(data):
-    for id_1, element_1 in enumerate(data):
-        for id_2, element_2 in enumerate(data):
-            if id_1 != id_2:
-                if element_1['nom_de_la_question'] == element_2['nom_de_la_question']:
-                    return False
+    for elem in data:
+        # print('elem : ')
+        # print(elem)
+        for id_1, element_1 in enumerate(data[elem]):
+            for id_2, element_2 in enumerate(data[elem]):
+                if id_1 != id_2:
+                    if element_1['nom_de_la_question'] == element_2['nom_de_la_question']:
+                        return False
     return True         # Voir comment traiter les exceptions ?
 
 def conversionLisibleJinja(data):

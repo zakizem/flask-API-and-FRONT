@@ -3,29 +3,30 @@
 
   <!-- <img src="./assets/logo.png"> -->
 
-  <Accueil></Accueil>
+  <Header></Header>
   <br>
-  <router-link :to="{ name: 'MonComposant' }">Formulaire</router-link>&nbsp;
-  <router-link :to="{ name: 'Auth' }">Authentification avec sessions</router-link>&emsp;
+  <router-link :to="{ name: 'Questionnaire' }">Formulaire</router-link>&nbsp;
+  <router-link :to="{ name: 'Accueil' }">Accueil</router-link>&emsp;
   <router-link :to="{ name: 'Protected' }">Protected</router-link>&nbsp;
 
   <br><br><br>
   <router-view/>
+
   <br>
 </div>
 </template>
 
 <script>
-// import MonComposant from './components/MonComposant'
-import Accueil from './components/Accueil'
+// import Questionnaire from './components/Questionnaire'
+import Header from './components/Header'
 // import Protected from './components/Protected'
 // import Identification from './components/Identification'
 
 export default {
   name: 'App',
   components: {
-    // MonComposant,
-    Accueil,
+    // Questionnaire,
+    Header,
     // Identification
   }
 }
@@ -38,6 +39,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 5px;
 }
 </style>
