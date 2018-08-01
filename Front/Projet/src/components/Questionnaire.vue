@@ -1,6 +1,7 @@
 <script>
 import infoStore from "../stores/infoStore"
 import vueStore from "../stores/vueStore"
+import {API} from '../base-url';
 
 export default {
   name: 'Questionnaire',
@@ -23,7 +24,7 @@ export default {
   created: function() {
     var self = this
     this.setEtapeCourante('identite', function() {
-      self.setQuestions(self, self['EtapeCourante']);
+      self.setQuestionsAXIOS(self, self['EtapeCourante']);
       self.reponses = Object.assign(self.reponses, self.data[self['EtapeCourante']]);
     })
   },
@@ -44,7 +45,7 @@ export default {
         //   self.reponses = {}
         // }
         }, response => {
-          console.log('errorrrr', response);
+          console.log('errorrrr envoiReponses ', response);
           // error callback
       });
     },
@@ -55,7 +56,7 @@ export default {
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.withCredentials = true;
       xmlHttp.send(null);
-      xmlHttp.onreadystatechange = function() {   // Call a function when the state changes.
+      xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
           console.log(response);
@@ -112,6 +113,21 @@ export default {
         }
       }
     },
+    setQuestionsAXIOS: function(self, categorie){
+
+      API.get("questionsCategorie/"+categorie)
+        .then(response => {
+          // JSON responses are automatically parsed.
+          // console.log("response de AXIOS : ", response);
+          self.questions = Object.assign({}, self.questions, response.data)
+        })
+        .catch(e => {
+          console.log("error axios setquestions", e);
+        })
+    },
+
+
+
     setQuestions: function(self, categorie) {
       var self = this
       this.$http.get("http://127.0.0.1:8011/questionsCategorie/"+categorie, {headers:"'Content-Type', 'application/json'", credentials: true, }).then(response => {
@@ -257,14 +273,14 @@ export default {
     <br>
   </li>
 
-  <button v-on:click="saveReponses" class="btn btn-primary">Sauvegarder les réponses (pas encore géré)</button>
+  <!-- <button v-on:click="saveReponses" class="btn btn-primary">Sauvegarder les réponses (pas encore géré)</button> -->
   <br>
   <br>
 
   <div class="controls">
-    <button @click="envoiReponses" class="btn btn-primary">Envoyer</button>
+    <button @click="envoiReponsesOLD" class="btn btn-primary">Envoyer</button>
     <br>
-    <button @click="a" class="btn btn-primary">a</button>
+    <!-- <button @click="a" class="btn btn-primary">a</button> -->
 
     <br>
 
@@ -272,20 +288,6 @@ export default {
 
   </div>
   <br> {{message}} <br>
-  <!-- test : {{test}} <br>
-  <input v-model="test"> -->
-
-
-  <!-- <li v-for="friend, i in friends">
-    <div v-if="editFriend === friend.id">
-      <input v-on:keyup.13="updateFriend(friend)" v-model="friend.name" />
-      <button v-on:click="updateFriend(friend)">saveData</button>
-    </div>
-    <div v-else>
-      <button v-on:click="editFriend = friend.id">edit</button>
-      <button v-on:click="deleteFriend(friend.id, i)">x</button> {{friend.name}}
-    </div>
-  </li> -->
 
 </div>
 </template>

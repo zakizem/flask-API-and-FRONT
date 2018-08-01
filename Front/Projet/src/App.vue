@@ -3,6 +3,7 @@
 
   <!-- <img src="./assets/logo.png"> -->
 
+
   <Header></Header>
   <br>
   <router-link :to="{ name: 'Questionnaire' }">Formulaire</router-link>&nbsp;
@@ -13,12 +14,17 @@
   <router-view/>
 
   <br>
+
+    <FileUpload></FileUpload>
+    <br><br>
 </div>
 </template>
 
 <script>
 // import Questionnaire from './components/Questionnaire'
 import Header from './components/Header'
+import FileUpload from './components/FileUpload'
+
 // import Protected from './components/Protected'
 // import Identification from './components/Identification'
 
@@ -27,6 +33,7 @@ export default {
   components: {
     // Questionnaire,
     Header,
+    FileUpload,
     // Identification
   }
 }

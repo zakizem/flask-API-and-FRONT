@@ -1,20 +1,23 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import datetime
+from flask_uploads import UploadSet, configure_uploads, patch_request_class, IMAGES, DEFAULTS
 
 from appli.utilities import *
 from appli.model import *
-from appli.form import *
-from appli.traitementExceptions import *
+# from appli.form import *
+# from appli.traitementExceptions import *
 
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
+# Configuration de flask-restful
 api = Api(app)
 
+# Configuration de flask-jwt-extended
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     jwt_refresh_token_required, create_refresh_token,
@@ -32,6 +35,19 @@ app.config['JWT_REFRESH_COOKIE_PATH'] = '/'
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_SECRET_KEY'] = 'clé super secrète man'
 jwt = JWTManager(app)
+
+# Configuration de flask-uploads
+# files = UploadSet(name='files', extensions=('jpeg', 'png', 'pdf'), default_dest=)
+photos = UploadSet('photos', IMAGES)
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/images'
+# app.config['UPLOADED_FILES_ALLOW'] = ('txt', 'rtf', 'pdf')
+
+configure_uploads(app, photos)
+# patch_request_class(app)        # Maximum size of 16 megabytes
+
+# config reqparser
+parser = reqparse.RequestParser()
+parser.add_argument('file', location='files',required=True, action='append')
 
 ##### API avec flask_restful
 
@@ -115,6 +131,43 @@ class Authentification(Resource):
         rv.set_cookie('Un Cookie', 'I am cookie', secure=False, path='/', httponly=False)
         return rv
 
+class SaveImage(Resource):
+    decorators = [jwt_required]
+    def post(self):
+        # print('request.files')
+        # for elem in request.files:
+        #     print(elem)
+        # print("request.headers")
+        # print(request.headers)
+
+        # args = parser.parse_args()
+        # print ('file',args)
+
+        subfolder= 'subfolder'
+
+        if 'photo' in request.files:
+            try:
+                filename = photos.save(request.files['photo'], subfolder)    # utiliser le truc qui sécurise le filename ? 3eme paramètre possible qui est le nom
+
+                current_user = get_jwt_identity()
+
+                print("current_user")
+                print(current_user)
+
+                if Existe('email', current_user):
+                    data = {'files' : {             #Il faudrait voir si un fichier du même nom existe dans le subfolder
+                    subfolder : filename
+                    }}
+
+                    update('Personne',data, current_user)
+                    return 'upload réussi, contenu mis à jour', 200
+
+                return "le mail n'existe pas", 402
+            except Exception as e:
+                return "Unauthorized extension", 403
+            return filename
+        return "photo n'est pas dans request.files", 406
+
 class Protected(Resource):
     decorators = [jwt_required]
     def get(self):
@@ -148,6 +201,7 @@ api.add_resource(InsertionReponses, '/envoiReponses')
 api.add_resource(Authentification, '/authentification')
 api.add_resource(Protected, '/protected')
 api.add_resource(Signup, '/signup')
+api.add_resource(SaveImage, '/saveImage')
 
 api.add_resource(Refresh, '/token/refresh')
 api.add_resource(Logout, '/token/logout')
