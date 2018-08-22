@@ -38,10 +38,10 @@ export default {
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.withCredentials = true;
 
-      console.log('JSON.stringify(this.reponse)');
-      console.log(JSON.stringify(this.reponse));
+      // console.log('JSON.stringify(this.reponse)');
+      // console.log(JSON.stringify(this.reponse));
 
-      xmlHttp.send(JSON.stringify(this.reponse));
+      xmlHttp.send(JSON.stringify(self.reponse));
       xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 
@@ -54,7 +54,7 @@ export default {
           self.addInfo(response)
           // infoStore.commit('login')
           self.$router.push('/Protected')
-          self.EcrireMessage("")
+          self.EcrireMessage("Utilisateur "+self.reponse.email+" enregistré ")
         }
         else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
           var response = JSON.parse(xmlHttp.responseText);

@@ -12,6 +12,7 @@ export default {
       EtapeCourante: '',
       questions: {},
       reponses: {},
+      sioui: {},
     }
   },
   components: {
@@ -24,32 +25,60 @@ export default {
     data() {
       return infoStore.state.infos.data
     },
-    EtapeCouranteMaj() {
-      return this.EtapeCourante.charAt(0).toUpperCase() + this.EtapeCourante.slice(1);
-    }
   },
 
   created: function() {
     var self = this
     this.setEtapeCourante('identite', function() {
       self.setQuestionsAXIOS(self, self['EtapeCourante']);
-
-      // AJOUT DE PROPRIETE REACTIVE : LA BONNE METHODE
-      var monObjet = Object.assign({}, monObjet, self.data[self['EtapeCourante']])
-      self.$set( self, 'reponses', monObjet )
-
-      // self.reponses = Object.assign(self.reponses, self.data[self['EtapeCourante']]);
+      self.reponses = Object.assign(self.reponses, self.data[self['EtapeCourante']]);
     })
   },
 
-  // watch: {
-  //   currentBranch: 'fetchData'
-  // },
+  watch: {
+    currentBranch: 'fetchData'
+  },
 
   // updated: function() {},
   // beforeUpdate: function() {},
 
   methods: {
+    envoiReponses: function() {
+      var self = this
+       this.$http.post("http://127.0.0.1:8011/envoiReponses", {body :JSON.stringify(self.data) , headers:"'Content-Type', 'application/json'", credentials: true, }).then(response => {
+      //this.$http.post("http://127.0.0.1:5001/withoutFlaskRestful", {body :JSON.stringify({'message':'caca'}) , headers:"'Content-Type', 'application/json'", credentials: true }).then(response => {
+        // success callback
+        console.log('reçu de l API : ');
+        console.log(response.body);
+        self.EcrireMessage(response.body)
+        // if (typeof response === "object") {     // comprendre ce que j'ai fait là
+        //   self.reponses = {}
+        // }
+        }, response => {
+          console.log('errorrrr envoiReponses ', response);
+          // error callback
+      });
+    },
+    a: function () {
+      var self = this
+      var xmlHttp = new XMLHttpRequest();   // new HttpRequest instance
+      xmlHttp.open("POST", "http://127.0.0.1:5001/getTokens");  //application/x-www-form-urlencoded ??? sécurité ??
+      xmlHttp.setRequestHeader("Content-Type", "application/json");
+      xmlHttp.withCredentials = true;
+      xmlHttp.send(null);
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          var response = JSON.parse(xmlHttp.responseText);
+          console.log(response);
+        }
+        else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
+          console.log('401111');
+        }
+        else if (xmlHttp.readyState == 4) {
+          console.log('autre erreur');
+        }
+      }
+    },
     envoiReponsesOLD: function() {
       var self = this
       var xmlHttp = new XMLHttpRequest();
@@ -57,18 +86,12 @@ export default {
       // xmlHttp.open("POST", "http://127.0.0.1:5001/withoutFlaskRestful", true);
       xmlHttp.open("POST", "http://127.0.0.1:8011/envoiReponses", true);
 
+      // xmlHttp.open("POST", "http://127.0.0.1:8011/envoiReponses", true);
       xmlHttp.setRequestHeader("Content-Type", "application/json");
       xmlHttp.withCredentials = true;
-      // xmlHttp.send(JSON.stringify(self.data));
-
-      var jsonData = {}
-      jsonData[self.EtapeCourante] = self.data[self.EtapeCourante]
-
-      xmlHttp.send(JSON.stringify(jsonData));
-
-      console.log("contenu envoyé : ",jsonData);
+      xmlHttp.send(JSON.stringify(self.data));
       //xmlHttp.send(null);
-      xmlHttp.onreadystatechange = function() {
+      xmlHttp.onreadystatechange = function() { //Call a function when the state changes.
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           var response = JSON.parse(xmlHttp.responseText);
           console.log('reçu de l API : ');
@@ -79,7 +102,7 @@ export default {
           // }
         }
         else if (xmlHttp.readyState == 4 && xmlHttp.status == 401) {
-          // TEST SI LE MESSAGE : TOKEN EXPIRED (éviter confusion avec d'autres 401? sinon récursivité infinie..)
+          // TEST SI LE MESSAGE : TOKEN EXPIRED (éviter confusion avec d'autres 401?)
           xmlHttp.open("GET", "http://127.0.0.1:8011/token/refresh", true);
           console.log('refresh...');
           xmlHttp.send(null);
@@ -101,19 +124,29 @@ export default {
       }
     },
     setQuestionsAXIOS: function(self, categorie){
+
       API.get("questionsCategorie/"+categorie)
         .then(response => {
           // JSON responses are automatically parsed.
           // console.log("response de AXIOS : ", response);
-
-          var monObjet = Object.assign({}, monObjet,  response.data)
-          self.$set( self, 'questions', monObjet )
-
-          // self.questions = Object.assign({}, self.questions, response.data)
+          self.questions = Object.assign({}, self.questions, response.data)
         })
         .catch(e => {
           console.log("error axios setquestions", e);
         })
+    },
+
+
+
+    setQuestions: function(self, categorie) {
+      var self = this
+      this.$http.get("http://127.0.0.1:8011/questionsCategorie/"+categorie, {headers:"'Content-Type', 'application/json'", credentials: true, }).then(response => {
+        // success callback
+        self.questions = Object.assign({}, self.questions, response.body)
+        }, response => {
+          console.log('error setQuestions');
+          // error callback
+      });
     },
     setQuestionsOLD: function(self, categorie) {
       var xmlHttp = new XMLHttpRequest();
@@ -143,11 +176,15 @@ export default {
       info[key]=self.reponses[key]
       infoStore.commit('addDataCategorie', {'info' : info, 'categorie' : self.data['EtapeCourante']})
     },
+    saveReponses: function() {
+      var self = this
+      // infoStore.commit('addData', self.data)
+      // self.envoiReponses()          // POUR ENREGISTRER DANS LA BDD
+    },
     viderChamps(){
       this.reponses= {}
       infoStore.commit('dataInit')
     },
-
     setEtapeCourante(ec, callback){
       this['EtapeCourante']=ec
       infoStore.commit('addData', {'EtapeCourante': ec})
@@ -186,16 +223,12 @@ export default {
       }
     },
     initialisationPage(etapeCourante, questions){
-      var self = this
+      var self = this // au cas ou, si ça marche, tester en enlevant ça
       self.setEtapeCourante(etapeCourante, function(){
         self.questions = {}
         self.questions = Object.assign({}, self.questions, questions)
-
         self.reponses = {}
-        var monObjet = Object.assign({}, monObjet, self.data[self['EtapeCourante']])
-        self.$set( self, 'reponses', monObjet )
-
-        // self.reponses = Object.assign(self.reponses, self.data[self['EtapeCourante']]);
+        self.reponses = Object.assign(self.reponses, self.data[self['EtapeCourante']]);
       })
     },
   }
@@ -203,22 +236,17 @@ export default {
 </script>
 
 <template>
-<div class="container ">
+<div class="container">
 
       <button v-on:click="previousQuestions" class="btn btn-primary">previous</button>&emsp;
       <button v-on:click="nextQuestions" class="btn btn-primary">next</button>
 
-  <br><br> <h3>{{EtapeCouranteMaj}}</h3> <br>
-<ul>
+  <br><br>
 
-  <li v-for="question, i in questions" class=" col ">
-<div class="col d-flex justify-content-between">
+  <li v-for="question, i in questions">
 
-<div class="">
-  {{question.label}}
-</div>
-    <div class=" ">
-
+    {{question.label}}
+    <br>
 
     <div v-if="question.type == 'text' || question.type == 'email'">
 
@@ -226,13 +254,6 @@ export default {
       <!-- <input v-on:blur="addreponses(question.nom_de_la_question, $event )"  v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" > -->
 
     </div>
-
-    <div v-else-if="question.type == 'nombre'">
-
-      <input v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" type="number" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question">
-
-    </div>
-
     <div v-else-if="question.type == 'liste'">
 
       <select v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" name="question.nom_de_la_question">
@@ -245,106 +266,41 @@ export default {
 
     <div v-else-if="question.type == 'radio'">
 
-      <div class="row">
-        <div v-for="choix in question.choix" class="col">
-          <label>
-              <input v-model="reponses[question.nom_de_la_question]" @change="saveInput(question.nom_de_la_question)" type="radio" v-bind:name="question.nom_de_la_question" v-bind:value="choix">
-              {{choix}}
-          </label>
-          <br>
-        </div>
+      <div v-for="choix in question.choix">
+        <label>
+            <input v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" type="radio" v-bind:name="question.nom_de_la_question" v-bind:value="choix">
+            {{choix}}
+        </label>
+        <br>
       </div>
 
-      <div v-if= " 'sioui' in question && reponses[question.nom_de_la_question] == 'oui' " class="sioui col" >
-
-            <li v-for="question_nested, i in question['sioui']" >
-
-              {{question_nested.label}}
-              <br>
-
-              <div v-if="question_nested.type == 'text' || question_nested.type == 'email'">
-
-                <input v-model="reponses[question_nested.nom_de_la_question]" @blur="saveInput(question_nested.nom_de_la_question)" v-bind:type="question_nested.type" v-bind:id="question_nested.nom_de_la_question" v-bind:name="question_nested.nom_de_la_question">
-                <!-- <input v-on:blur="addreponses(question_nested.nom_de_la_question, $event )"  v-bind:type="question_nested.type" v-bind:id="question_nested.nom_de_la_question" v-bind:name="question_nested.nom_de_la_question" > -->
-
-              </div>
-              <div v-else-if="question_nested.type == 'liste'">
-
-                <select v-model="reponses[question_nested.nom_de_la_question]" @blur="saveInput(question_nested.nom_de_la_question)" name="question_nested.nom_de_la_question">
-
-                  <option  v-for="choix in question_nested.choix" data-tokens="choix" class="col"> {{choix}} </option>
-
-                </select>
-
-              </div>
-
-              <div v-else-if="question_nested.type == 'radio'">
-
-                <div v-for="choix in question_nested.choix">
-                  <label>
-                      <input v-model="reponses[question_nested.nom_de_la_question]" @change="saveInput(question_nested.nom_de_la_question)" type="radio" v-bind:name="question_nested.nom_de_la_question" v-bind:value="choix">
-                      {{choix}}
-                  </label>
-                  <br>
-                </div>
-
-
-                </div>
-
-                <div v-else-if="question_nested.type == 'nombre'">
-
-                  <input v-model="reponses[question_nested.nom_de_la_question]" @blur="saveInput(question_nested.nom_de_la_question)" type="number" v-bind:id="question_nested.nom_de_la_question" v-bind:name="question_nested.nom_de_la_question">
-
-                </div>
-
-                <div v-else-if="question_nested.type == 'fichier'">
-
-                  <br>
-                  <FileUpload v-bind:nom_de_la_question="question_nested.nom_de_la_question" ></FileUpload>
-                  <br>
-
-                </div>
-
-                <div v-else>
-                  <br>autre type de question_nested<br>
-                </div>
-                <br>
-              </li>
-
+      <div v-if= " 'sioui' in question && reponses[question.nom_de_la_question] == 'oui' ">
+        <h1>IBAZ</h1>
       </div>
 
-      </div>
-      <!-- <div v-bind:class="reponses[question.nom_de_la_question]+'-display'" class="hide">
-        <h3>iiiiiiiiii</h3>
-      </div> -->
-
-
+    </div>
 
     <div v-else-if="question.type == 'fichier'">
 
-
+      <br>
       <FileUpload v-bind:nom_de_la_question="question.nom_de_la_question" ></FileUpload>
-
+      <br>
 
     </div>
+
 
     <div v-else>
       <br>autre type de question<br>
     </div>
     <br>
-
-    </div>
-
-    </div>
   </li>
-  </ul>
 
   <!-- <button v-on:click="saveReponses" class="btn btn-primary">Sauvegarder les réponses (pas encore géré)</button> -->
   <br>
   <br>
 
   <div class="controls">
-    <button @click="envoiReponsesOLD" class="btn btn-primary">Enregistrer les réponses</button>
+    <button @click="envoiReponsesOLD" class="btn btn-primary">Envoyer</button>
     <br>
     <!-- <button @click="a" class="btn btn-primary">a</button> -->
 
@@ -353,7 +309,7 @@ export default {
     <button v-on:click="viderChamps" class="btn btn-primary">viderChamps</button>
 
   </div>
-
+  <br> {{message}} <br>
 
 
 
@@ -361,20 +317,43 @@ export default {
 </template>
 
 <style lang="css">
-.oui-display{
-  display: block !important;
-}
-.oui-display{
-  display: none;
-}
-.hide{
-  display: none;
-}
-.sioui{
-  right: 2%;
-  border: 1px solid black;
-}
-ul {
-  list-style-type: none;
-}
+/* .row {
+  margin: auto !important;
+  max-width: 300px;
+} */
 </style>
+
+<!--  coms
+
+<input v-on:blur="remplirreponses(question.nom_de_la_question ,$event)" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" >
+ <input type="text" name="" value="" v-on:click="ajout_machin" > hola
+
+
+    // // return new Promise(resolve => {
+    // //     setTimeout(() => {
+    //       self=this;
+    //       console.log('1');
+    //       this.httpGet();
+    //       console.log('uno et demi');
+    //       // this.appel_API("http://127.0.0.1:8011/1");
+    //       // console.log('tresss');
+    //       // alert(this.questions);
+    //       console.log('this.questions (dans created) : '+this.questions);
+    //
+    // //    resolve()
+    // //     })
+    // // })
+
+
+    // envoyerRequeteAvecParametres(parametre) {
+    //   alert('1')
+    //   fetch("http://127.0.0.1:8011/1", {
+    //     body: JSON.stringify(parametre),
+    //   })
+    //   .then(() => {
+    //     alert('2')
+    //     this.courant[label]=parametre.label
+    //   })
+    // }
+
+  -->

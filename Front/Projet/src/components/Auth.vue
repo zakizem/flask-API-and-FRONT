@@ -13,11 +13,13 @@ export default {
       questions: [
         {
             'nom_de_la_question': 'email',
-            'label': 'Adresse mail : '
+            'label': 'Adresse mail : ',
+            'type' : 'text'
         },
         {
             'nom_de_la_question': 'password',
-            'label': 'Mot de passe : '
+            'label': 'Mot de passe : ',
+            'type' : 'password'
         },
       ],
       reponse: {},
@@ -91,7 +93,7 @@ AUTHENTIFICATION
 
     {{question.label}}
 <br>
-    <input v-model="reponse[question.nom_de_la_question]" type="text" :id="question.nom_de_la_question" :name="question.nom_de_la_question" >
+    <input v-model="reponse[question.nom_de_la_question]" :type="question.type" :name="question.nom_de_la_question" >
     <!-- <input v-on:blur="addReponse(question.nom_de_la_question, $event )"  v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question" > -->
     <br><br>
 
@@ -101,7 +103,7 @@ AUTHENTIFICATION
     <button v-on:click="login" class="btn btn-primary">S'authentifier</button>
   </div>
   <br>
-  {{message}}
+
 
 
 </div>

@@ -1,0 +1,6 @@
+:: Remplacer le répertoire : C:/Users/zzr/flask_projets/git_repo/API par le répertoire contenant l'API dans votre machine
+
+CALL C:/Users/zzr/flask_projets/git_repo/API/venv\Scripts\activate.bat
+cd C:/Users/zzr/flask_projets/git_repo/API/venv/app
+pytest
+pause

@@ -19,7 +19,7 @@ LANCEMENT SERVEUR FLASK:
 cd flask_projets/git_repo/API/venv/Scripts
 activate
 cd../app
-set FLASK_APP=app_nettoyee.py
+set FLASK_APP=app.py
 set FLASK_DEBUG=1
 flask run --with-threads --port 8011
 
@@ -27,17 +27,21 @@ SERVEUR BDD ORIENT:
 cd C:\Users\zzr\orientdb-community-importers-2.2.34\bin
 server.bat
 
-
 Lancement Shell terminal atom :
 cd .\venv\Scripts\
 .\activate.bat
 cd..
 cd .\app\
 
-
 SERVEUR BDD ORIENT ENTREPRISE:
 cd C:\Users\zzr\orientdb-enterprise-2.2.31 tar\bin
 server.bat
+
+LANCEMENT des tests PYTEST FLASK:
+cd flask_projets/git_repo/API/venv/Scripts
+activate
+cd../app
+pytest
 
 SERVEUR BDD RETHINK
 cd rethinkdb-2.3.6

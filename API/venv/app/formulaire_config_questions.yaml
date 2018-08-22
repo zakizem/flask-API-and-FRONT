@@ -7,6 +7,25 @@ identite:
     label: 'Nom : '
     type: text
     saisie_obligatoire: oui
+  - nom_de_la_question: tabagisme_actif
+    label : "Tabagisme actif : "
+    type : radio
+    choix :
+      - oui
+      - non
+    sioui :
+      - nom_de_la_question : age_debut
+        label : "Age de debut : "
+        type : nombre
+      - nom_de_la_question : nombre_paquets
+        label : "Nombre de paquets par jour : "
+        type : nombre
+      - nom_de_la_question: testtt
+        label: 'Test choix : '
+        type: radio
+        choix:
+          - premierChoix
+          - secondChoix
   - nom_de_la_question: destination
     label: 'Destination de vacances favorite : '
     type: liste
@@ -18,7 +37,7 @@ identite:
     saisie_obligatoire: non
   - nom_de_la_question: age
     label: 'Age : '
-    type: text
+    type: nombre
     saisie_obligatoire: non
   - nom_de_la_question: sexe
     label: 'Sexe : '
@@ -26,6 +45,12 @@ identite:
     choix:
       - Masculin
       - Feminin
+  - nom_de_la_question: scanner_mammo
+    label: 'Scanner mammo : '
+    type: fichier
+  - nom_de_la_question: testFile
+    label: 'testFile : '
+    type: fichier
 consultation:
   - nom_de_la_question: dateconsultation
     label: 'date de consultation : '
@@ -55,5 +80,5 @@ atcd:
     saisie_obligatoire: oui
   - nom_de_la_question: ageDiagnostiqueDiabete
     label: 'Age au diagnostic diabète : '
-    type: text
+    type: nombre
     saisie_obligatoire: oui

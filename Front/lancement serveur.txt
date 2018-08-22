@@ -19,7 +19,7 @@ LANCEMENT SERVEUR FLASK:
 cd flask_projets/git_repo/API/venv/Scripts
 activate
 cd../app
-set FLASK_APP=app_nettoyee.py
+set FLASK_APP=app.py
 set FLASK_DEBUG=1
 flask run --with-threads --port 8011
 

@@ -3,38 +3,35 @@
 
   <!-- <img src="./assets/logo.png"> -->
 
-
   <Header></Header>
   <br>
-  <router-link :to="{ name: 'Questionnaire' }">Formulaire</router-link>&nbsp;
+  <router-link :to="{ name: 'Questionnaire' }">Questionnaire</router-link>&nbsp;
   <router-link :to="{ name: 'Accueil' }">Accueil</router-link>&emsp;
   <router-link :to="{ name: 'Protected' }">Protected</router-link>&nbsp;
 
   <br><br><br>
   <router-view/>
 
-  <br>
+  <br><br>
+  <br> {{message}} <br>
 
-    <FileUpload></FileUpload>
-    <br><br>
 </div>
 </template>
 
 <script>
-// import Questionnaire from './components/Questionnaire'
 import Header from './components/Header'
-import FileUpload from './components/FileUpload'
 
-// import Protected from './components/Protected'
-// import Identification from './components/Identification'
+import vueStore from "./stores/vueStore"
 
 export default {
   name: 'App',
   components: {
-    // Questionnaire,
     Header,
-    FileUpload,
-    // Identification
+  },
+  computed: {
+    message() {
+      return vueStore.state.message
+    },
   }
 }
 </script>

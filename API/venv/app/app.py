@@ -1,15 +1,20 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS
 import datetime
+from flask_restful import Resource, Api, reqparse
+from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    jwt_refresh_token_required, create_refresh_token,
+    get_jwt_identity, set_access_cookies,
+    set_refresh_cookies, unset_jwt_cookies
+)
 from flask_uploads import UploadSet, configure_uploads, patch_request_class, IMAGES, DEFAULTS
+import requests
 
 from appli.utilities import *
 from appli.model import *
 # from appli.form import *
 # from appli.traitementExceptions import *
-
-from flask_restful import Resource, Api, reqparse
-from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -18,12 +23,6 @@ CORS(app, supports_credentials=True)
 api = Api(app)
 
 # Configuration de flask-jwt-extended
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    jwt_refresh_token_required, create_refresh_token,
-    get_jwt_identity, set_access_cookies,
-    set_refresh_cookies, unset_jwt_cookies
-)
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_SESSION_COOKIE'] = True
 
@@ -99,7 +98,7 @@ class InsertionReponses(Resource):
             update('Personne',data, current_user)
             return 'contenu mis à jour', 200
 
-        return 'Adresse mail '+current_user+' n existe pas', 400
+        return 'Adresse mail '+current_user+' non trouvée', 400
 
         # SauvgarderDoc(data, 'Personne')
         # resultat=chercherBDD('Personne','email', data['email'])
@@ -134,39 +133,29 @@ class Authentification(Resource):
 class SaveImage(Resource):
     decorators = [jwt_required]
     def post(self):
-        # print('request.files')
-        # for elem in request.files:
-        #     print(elem)
-        # print("request.headers")
-        # print(request.headers)
-
-        # args = parser.parse_args()
-        # print ('file',args)
-
-        subfolder= 'subfolder'
-
-        if 'photo' in request.files:
+        current_user = get_jwt_identity()
+        if request.files != [] and 'nom_de_la_question' in request.form and Existe('email', current_user):
             try:
-                filename = photos.save(request.files['photo'], subfolder)    # utiliser le truc qui sécurise le filename ? 3eme paramètre possible qui est le nom
+                subfolder = request.form.get('nom_de_la_question')
+                data={"files" : {subfolder : {}}}
+                i=0
 
-                current_user = get_jwt_identity()
+                for elem in request.files:
+                    # nom_fichier = current_user+"_"+elem
+                    filename = photos.save(request.files[elem], subfolder)
 
-                print("current_user")
-                print(current_user)
+                    data["files"][subfolder][str(i)]=filename       #Il faudrait penser à vérifier si un fichier du même nom existe dans le subfolder
+                    i=i+1
 
-                if Existe('email', current_user):
-                    data = {'files' : {             #Il faudrait voir si un fichier du même nom existe dans le subfolder
-                    subfolder : filename
-                    }}
+                # print("AVANT appel de update : data : ")
+                # print(data)
 
-                    update('Personne',data, current_user)
-                    return 'upload réussi, contenu mis à jour', 200
+                updateFiles('Personne',data, current_user)
+                return 'upload réussi, contenu mis à jour', 200
 
-                return "le mail n'existe pas", 402
             except Exception as e:
                 return "Unauthorized extension", 403
-            return filename
-        return "photo n'est pas dans request.files", 406
+        return "pas de fichiers reçus ou pas de nom_de_la_question ou mail n existe pas", 406
 
 class Protected(Resource):
     decorators = [jwt_required]
@@ -231,6 +220,9 @@ def a():
 
 @app.route('/')
 def index():
+
+    return requests.get("https://jsonplaceholder.typicode.com/todos/1").content
+
     #return ('API en marche..')
     # return json.dumps(app.config)
     data=chercherCategorie('Personne', 'email', 'ola', 'identite')
