@@ -51,7 +51,10 @@ const infoStore = new Vuex.Store({
       },
     }
     },
-    dataInit(state){
+    dataInitEtape(state, etapeCourante){
+      state.infos['data'][etapeCourante]={}
+    },
+    dataInitAll(state){
       state.infos['data']={
         'EtapeCourante': 'identite',
         'identite': {

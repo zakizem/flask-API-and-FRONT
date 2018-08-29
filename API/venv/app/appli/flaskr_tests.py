@@ -5,7 +5,6 @@ import pytest
 
 from flaskr import flaskr
 
-
 @pytest.fixture
 def client():
     db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()

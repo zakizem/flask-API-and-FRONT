@@ -144,10 +144,9 @@ export default {
       infoStore.commit('addDataCategorie', {'info' : info, 'categorie' : self.data['EtapeCourante']})
     },
     viderChamps(){
-      this.reponses= {}
-      infoStore.commit('dataInit')
+      this.reponses[this.etapeCourante]= {}
+      infoStore.commit('dataInitEtape', {'etapeCourante': this.etapeCourante})
     },
-
     setEtapeCourante(ec, callback){
       this['EtapeCourante']=ec
       infoStore.commit('addData', {'EtapeCourante': ec})
@@ -218,8 +217,7 @@ export default {
   {{question.label}}
 </div>
     <div class=" ">
-
-
+      
     <div v-if="question.type == 'text' || question.type == 'email'">
 
       <input v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" v-bind:type="question.type" v-bind:id="question.nom_de_la_question" v-bind:name="question.nom_de_la_question">
@@ -235,7 +233,7 @@ export default {
 
     <div v-else-if="question.type == 'liste'">
 
-      <select v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" name="question.nom_de_la_question">
+      <select v-model="reponses[question.nom_de_la_question]" @blur="saveInput(question.nom_de_la_question)" name="question.nom_de_la_question" class="custom-select">
 
         <option  v-for="choix in question.choix" data-tokens="choix" class="col-6"> {{choix}} </option>
 
@@ -270,7 +268,7 @@ export default {
               </div>
               <div v-else-if="question_nested.type == 'liste'">
 
-                <select v-model="reponses[question_nested.nom_de_la_question]" @blur="saveInput(question_nested.nom_de_la_question)" name="question_nested.nom_de_la_question">
+                <select v-model="reponses[question_nested.nom_de_la_question]" @blur="saveInput(question_nested.nom_de_la_question)" name="question_nested.nom_de_la_question" class="custom-select ">
 
                   <option  v-for="choix in question_nested.choix" data-tokens="choix" class="col"> {{choix}} </option>
 
